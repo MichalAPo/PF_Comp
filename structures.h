@@ -4,28 +4,28 @@
 #include <QVector2D>
 #include <QList>
 
+enum CellType{Start, Goal, Wall, Check, Empty, Path, Visited};
+
 constexpr inline bool operator <(QVector2D v1, QVector2D v2) noexcept
     {
         return v1.x() < v2.x() || v1.y() < v2.y();
     }
 
 static int cellSize = 10;
-enum CellType{Start, Goal, Wall, Check, Empty, Path, Visited};
 
 struct OneCell
 {
   QVector2D position;
-  QVector2D parentPosition = QVector2D(-2,-2);
-  bool visited = false;
-  float g,h,f;
+  QVector2D parentPosition;
   CellType type;
+  float g,h,f;
 
   QList<QVector2D> directions =
   {
-      QVector2D(-1,0),
-      QVector2D(0,-1),
-      QVector2D(0,1),
-      QVector2D(1,0)
+      QVector2D(0,-2),
+      QVector2D(0,2),
+      QVector2D(-2,0),
+      QVector2D(2,0)
   };
 
   OneCell(QVector2D position = QVector2D(0,0), CellType type = CellType::Empty)

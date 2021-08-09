@@ -15,8 +15,8 @@ mainmanager::mainmanager(QWidget *parent): QGraphicsView(parent)
     paint->setPen(QColor(0,0,0,255));
     paint->setBrush(QColor(255,255,255,255));
 
-    test = new testwindow(QVector2D(50.0f,50.0f), 50, paint);        //tabela dynamiczna
-    test2 = new testwindow(QVector2D(600.0f,50.0f), 50, paint);
+    test = new testwindow(QVector2D(50.0f,50.0f), 51, paint);        //tabela dynamiczna
+    test2 = new testwindow(QVector2D(600.0f,50.0f), 51, paint);
 
     astar1 = new astar(test);
     astar2 = new astar(test2);

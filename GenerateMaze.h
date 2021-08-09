@@ -11,15 +11,14 @@ public:
 
     GenerateMaze(testwindow*);
     bool IsValid(QVector2D);
-
-    bool generating;
-    QVector2D checkCell;
-    bool backtracking;
-    QMap<QVector2D, OneCell> maze;
-    testwindow* windowPointer;
     void Generate();
     void Initialize();
     void DrawMaze();
+
+    QList<QVector2D> pathCells;
+    QVector2D checkCell;
+    QMap<QVector2D, OneCell> maze;
+    testwindow* windowPointer;
 };
 
 #endif // GENERATEMAZE_H

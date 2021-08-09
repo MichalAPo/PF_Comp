@@ -6,7 +6,7 @@
 #include <QMouseEvent>
 #include <QDebug>
 #include <QKeyEvent>
-#include<QBrush>
+#include <QBrush>
 #include <QPen>
 #include "testwindow.h"
 #include "structures.h"
