@@ -14,7 +14,7 @@ bool operator ==(const OneCell l, const OneCell r)
 
 astar::astar(testwindow* window)
 {
-    windowPointer = window;
+    this->windowPointer = window;
     path = QList<QVector2D>();
     visitedCells = QList<QVector2D>();
 }
@@ -29,13 +29,12 @@ void astar::initialize()
 
     cells = QMap<QVector2D, OneCell>();
 
-    QVector2D p;
     for(int y = 0; y<windowPointer->boardSize; y++)
     {
         for(int x = 0; x<windowPointer->boardSize; x++)
         {
             cells[QVector2D(x,y)] = OneCell(QVector2D(x,y));
-            cells[QVector2D(x,y)].ChangeGFH(std::numeric_limits<float>().max(), std::numeric_limits<float>().max(), heuristics(p,targetPos));
+            cells[QVector2D(x,y)].ChangeGFH(std::numeric_limits<float>().max(), std::numeric_limits<float>().max(), heuristics(QVector2D(0,0),targetPos));
         }
     }
     cells[startPos].ChangeGFH(0, 0, 0);

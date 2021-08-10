@@ -8,10 +8,15 @@
 #include <QKeyEvent>
 #include <QBrush>
 #include <QPen>
+#include <QScreen>
+#include <QGuiApplication>
+#include <QBitmap>
 #include "testwindow.h"
 #include "structures.h"
 #include "astar.h"
 #include "GenerateMaze.h"
+#include "dfs.h"
+
 
 class mainmanager: public QGraphicsView
 {
@@ -27,8 +32,8 @@ public:
     CellType type = CellType::Empty;
     testwindow* test;
     testwindow* test2;
-    astar* astar1;
-    astar* astar2;
+    astar* astarPF;
+    dfs* dfsPF;
     GenerateMaze* gen;
     GenerateMaze* gen2;
 };

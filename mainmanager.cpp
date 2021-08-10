@@ -1,7 +1,4 @@
 #include "mainmanager.h"
-#include <QScreen>
-#include <QGuiApplication>
-#include <QBitmap>
 
 mainmanager::mainmanager(QWidget *parent): QGraphicsView(parent)
 {
@@ -18,8 +15,8 @@ mainmanager::mainmanager(QWidget *parent): QGraphicsView(parent)
     test = new testwindow(QVector2D(50.0f,50.0f), 51, paint);        //tabela dynamiczna
     test2 = new testwindow(QVector2D(600.0f,50.0f), 51, paint);
 
-    astar1 = new astar(test);
-    astar2 = new astar(test2);
+    astarPF = new astar(test);
+    dfsPF = new dfs(test2);
 
     gen = new GenerateMaze(test);
     gen2 = new GenerateMaze(test2);
@@ -63,12 +60,12 @@ void mainmanager::keyPressEvent(QKeyEvent *event)
         {
             test->clearPath();
             test2->clearPath();
-            astar1->findPath();
-            astar2->findPath();
-            astar1->drawVisited(astar1->visitedCells);
-            astar2->drawVisited(astar2->visitedCells);
-            astar1->drawPath(astar1->path);
-            astar2->drawPath(astar2->path);
+            astarPF->findPath();
+            dfsPF->FindPath('d');
+            astarPF->drawVisited(astarPF->visitedCells);
+            dfsPF->DrawVisited(dfsPF->visitedCells);
+            astarPF->drawPath(astarPF->path);
+            dfsPF->DrawPath(dfsPF->path);
             scene->addPixmap(*pix);
             break;
         }
@@ -82,9 +79,10 @@ void mainmanager::keyPressEvent(QKeyEvent *event)
         case Qt::Key_G:
         {
             test->clear();
-            //test2->clear();
+            test2->clear();
             gen->Generate();
-            //gen2->Generate();
+            gen2->maze = gen->maze;
+            gen2->DrawMaze();
             scene->addPixmap(*pix);
             break;
         }

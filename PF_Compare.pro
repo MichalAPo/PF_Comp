@@ -11,6 +11,7 @@ CONFIG += c++11
 SOURCES += \
     GenerateMaze.cpp \
     astar.cpp \
+    dfs.cpp \
     functions.cpp \
     main.cpp \
     mainmanager.cpp \
@@ -19,6 +20,7 @@ SOURCES += \
 HEADERS += \
     GenerateMaze.h \
     astar.h \
+    dfs.h \
     functions.h \
     mainmanager.h \
     structures.h \

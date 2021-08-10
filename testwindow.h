@@ -15,13 +15,14 @@ public:
     void changeOneCell(OneCell, QColor);
     void drawBoard();
     void clearPath();
+    void clear();
+
     QVector2D boardPosition;
     int boardSize=1;
     QPainter* paintPointer;
     QList<OneCell> board;
     QVector2D startPos = QVector2D(-1,-1);
     QVector2D targetPos = QVector2D(-1,-1);
-    void clear();
 };
 
 #endif // TESTWINDOW_Hs

@@ -18,14 +18,15 @@ struct OneCell
   QVector2D position;
   QVector2D parentPosition;
   CellType type;
+  bool visited = false;
   float g,h,f;
 
   QList<QVector2D> directions =
   {
-      QVector2D(0,-2),
-      QVector2D(0,2),
-      QVector2D(-2,0),
-      QVector2D(2,0)
+      QVector2D(0,-1),
+      QVector2D(1,0),
+      QVector2D(0,1),
+      QVector2D(-1,0)
   };
 
   OneCell(QVector2D position = QVector2D(0,0), CellType type = CellType::Empty)

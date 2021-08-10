@@ -70,26 +70,26 @@ void GenerateMaze::Generate()
 
         int direction = rand() % maze[checkCell].directions.count();
 
-        if(!IsValid(checkCell + maze[checkCell].directions[direction]))
+        if(!IsValid(checkCell + (maze[checkCell].directions[direction]) * 2))
         {
             maze[checkCell].directions.removeAt(direction);
             continue;
         }
 
-        maze[checkCell + maze[checkCell].directions[direction]].type = CellType::Empty;
+        maze[checkCell + (maze[checkCell].directions[direction] * 2)].type = CellType::Empty;
 
-        if(checkCell.x() == (checkCell.x() + maze[checkCell].directions[direction].x()))
+        if(checkCell.x() == (checkCell.x() + (maze[checkCell].directions[direction].x() * 2)))
         {
-            QVector2D tempPos = QVector2D(checkCell.x(), ((checkCell.y() + (checkCell.y() + maze[checkCell].directions[direction].y())))/2);
+            QVector2D tempPos = QVector2D(checkCell.x(), ((checkCell.y() + (checkCell.y() + (maze[checkCell].directions[direction].y() * 2))))/2);
             maze[tempPos].type = CellType::Empty;
         }
-        if(checkCell.y() == (checkCell.y() + maze[checkCell].directions[direction].y()))
+        if(checkCell.y() == (checkCell.y() + (maze[checkCell].directions[direction].y() * 2)))
         {
-            QVector2D tempPos = QVector2D((checkCell.x() + (checkCell.x() + maze[checkCell].directions[direction].x()))/2, checkCell.y());
+            QVector2D tempPos = QVector2D((checkCell.x() + (checkCell.x() + (maze[checkCell].directions[direction].x() * 2)))/2, checkCell.y());
             maze[tempPos].type = CellType::Empty;
         }
 
-        checkCell = checkCell + maze[checkCell].directions[direction];
+        checkCell = checkCell + (maze[checkCell].directions[direction] * 2);
         pathCells.push_back(checkCell);
         //a = false;
     }
