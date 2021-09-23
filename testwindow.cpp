@@ -5,11 +5,11 @@ testwindow::testwindow(QVector2D pos, int size, QPainter* paint)
     boardSize = size;
     paintPointer = paint;
     boardPosition = pos;
-    createBoard();
+    CreateBoard();
 
 }
 
-void testwindow::drawBoard(){
+void testwindow::DrawBoard(){
     for(auto it = board.begin(); it !=board.end(); ++it)
     {
         QVector2D worldPos = CalculateWorldPosition(it->position, boardPosition);
@@ -17,17 +17,17 @@ void testwindow::drawBoard(){
     }
 }
 
-void testwindow::createBoard()
+void testwindow::CreateBoard()
 {
     for(int i=0; i<boardSize; i++){
         for(int j=0; j<boardSize; j++){
                 board.push_back(OneCell(QVector2D(j,i)));
             }
         }
-    drawBoard();
+    DrawBoard();
 }
 
-void testwindow::clearPath()
+void testwindow::ClearPath()
 {
     paintPointer->setBrush(QColor(255,255,255,255));
     for(auto it = board.begin(); it !=board.end(); ++it)
@@ -40,7 +40,7 @@ void testwindow::clearPath()
     }
 }
 
-void testwindow::clear()
+void testwindow::Clear()
 {
     startPos = QVector2D(-1,-1);
     targetPos = QVector2D(-1,-1);
@@ -53,7 +53,7 @@ void testwindow::clear()
     }
 }
 
-void testwindow::changeOneCell(OneCell cellPar, QColor color)
+void testwindow::ChangeOneCell(OneCell cellPar, QColor color)
 {
     if(!IsInBounds(cellPar.position, boardPosition, QVector2D(boardPosition.x()+(boardSize*cellSize), boardPosition.y()+(boardSize*cellSize))))
         return;
@@ -93,5 +93,10 @@ void testwindow::changeOneCell(OneCell cellPar, QColor color)
         targetPos = board.at(boardPos).position;
         paintPointer->setBrush(QColor(255,0,0,255));
     }
+}
+
+void testwindow::TypeText(QVector2D pos, QString text)
+{
+    paintPointer->drawText(QRect(pos.x(), pos.y(), cellSize, cellSize), Qt::AlignCenter, text);
 }
 

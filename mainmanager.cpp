@@ -2,24 +2,27 @@
 
 mainmanager::mainmanager(QWidget *parent): QGraphicsView(parent)
 {
-    scene = new QGraphicsScene(0,0,1200,800);
+    scene = new QGraphicsScene(0,0,screenWidth,screenHeight);
     setScene(scene);
 
-    pix = new QPixmap(1200,800);
+    pix = new QPixmap(screenWidth,screenHeight);
     pix->fill(Qt::white);
 
     paint = new QPainter(pix);
     paint->setPen(QColor(0,0,0,255));
     paint->setBrush(QColor(255,255,255,255));
 
-    test = new testwindow(QVector2D(50.0f,50.0f), 51, paint);        //tabela dynamiczna
-    test2 = new testwindow(QVector2D(600.0f,50.0f), 51, paint);
+    test = new testwindow(QVector2D(25.0f,25.0f), 31, paint);
+    test2 = new testwindow(QVector2D(360.0f,25.0f), 31, paint);
+    test3 = new testwindow(QVector2D(695.0f,25.0f), 31, paint);
 
     astarPF = new astar(test);
     dfsPF = new dfs(test2);
+    bfsPF = new dfs(test3);
 
     gen = new GenerateMaze(test);
     gen2 = new GenerateMaze(test2);
+    gen3 = new GenerateMaze(test3);
 
     scene->addPixmap(*pix);
 }
@@ -54,35 +57,49 @@ void mainmanager::keyPressEvent(QKeyEvent *event)
             //Empty
             type = CellType::Empty;
             color = QColor(255,255,255,255);
+            bfsPF->ReconstructPath();
             break;
         }
         case Qt::Key_Space:
         {
-            test->clearPath();
-            test2->clearPath();
-            astarPF->findPath();
+            test->ClearPath();
+            test2->ClearPath();
+            test3->ClearPath();
+
+            astarPF->FindPath();
             dfsPF->FindPath('d');
-            astarPF->drawVisited(astarPF->visitedCells);
+            bfsPF->FindPath('b');
+
+            astarPF->DrawVisited(astarPF->visitedCells);
             dfsPF->DrawVisited(dfsPF->visitedCells);
-            astarPF->drawPath(astarPF->path);
+            bfsPF->DrawVisited(bfsPF->visitedCells);
+
+            astarPF->DrawPath(astarPF->path);
             dfsPF->DrawPath(dfsPF->path);
+            bfsPF->DrawPath(bfsPF->path);
+
             scene->addPixmap(*pix);
             break;
         }
         case Qt::Key_C:
         {
-            test->clearPath();
-            test2->clearPath();
+            test->ClearPath();
+            test2->ClearPath();
+            test3->ClearPath();
+
             scene->addPixmap(*pix);
             break;
         }
         case Qt::Key_G:
         {
-            test->clear();
-            test2->clear();
+            test->Clear();
+            test2->Clear();
+            test3->Clear();
             gen->Generate();
             gen2->maze = gen->maze;
+            gen3->maze = gen->maze;
             gen2->DrawMaze();
+            gen3->DrawMaze();
             scene->addPixmap(*pix);
             break;
         }
@@ -92,12 +109,12 @@ void mainmanager::keyPressEvent(QKeyEvent *event)
 
 void mainmanager::mousePressEvent(QMouseEvent *event)
 {
-    //qDebug() << event->windowPos().x() << " "<< event->windowPos().y();
     if(event->buttons() == Qt::LeftButton)
     {
         OneCell cellPos = OneCell(QVector2D(event->scenePosition().x(), event->scenePosition().y()), type);
-        test->changeOneCell(cellPos, color);
-        test2->changeOneCell(cellPos, color);
+        test->ChangeOneCell(cellPos, color);
+        test2->ChangeOneCell(cellPos, color);
+        test3->ChangeOneCell(cellPos, color);
         scene->addPixmap(*pix);
     }
 }

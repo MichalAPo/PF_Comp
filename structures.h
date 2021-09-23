@@ -1,5 +1,6 @@
 #ifndef STRUCTURES_H
 #define STRUCTURES_H
+
 #include <QString>
 #include <QVector2D>
 #include <QList>
@@ -12,11 +13,13 @@ constexpr inline bool operator <(QVector2D v1, QVector2D v2) noexcept
     }
 
 static int cellSize = 10;
+static int screenWidth = 1050;
+static int screenHeight = 600;
 
 struct OneCell
 {
   QVector2D position;
-  QVector2D parentPosition;
+  QVector2D parentPosition = QVector2D(0,0);
   CellType type;
   bool visited = false;
   float g,h,f;

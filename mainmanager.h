@@ -18,24 +18,28 @@
 #include "dfs.h"
 
 
-class mainmanager: public QGraphicsView
+class mainmanager: public QGraphicsView, public functions
 {
 public:
     mainmanager(QWidget *parent=NULL);
     void mousePressEvent(QMouseEvent*) override;
     void keyPressEvent(QKeyEvent*) override;
-    void addToScene();
+    void AddToScene();
+
     QGraphicsScene* scene;
-    QPixmap *pix;
+    QPixmap* pix;
     QColor color = QColor(255,255,255,255);
     QPainter *paint;
     CellType type = CellType::Empty;
     testwindow* test;
     testwindow* test2;
+    testwindow* test3;
     astar* astarPF;
     dfs* dfsPF;
+    dfs* bfsPF;
     GenerateMaze* gen;
     GenerateMaze* gen2;
+    GenerateMaze* gen3;
 };
 
 #endif // MAINMANAGER_H

@@ -1,5 +1,6 @@
 #ifndef GENERATEMAZE_H
 #define GENERATEMAZE_H
+
 #include "testwindow.h"
 #include "structures.h"
 #include "functions.h"

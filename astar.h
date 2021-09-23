@@ -1,25 +1,28 @@
 #ifndef ASTAR_H
 #define ASTAR_H
 
+#include <math.h>
+#include <QVector2D>
+#include <limits>
 #include "testwindow.h"
 #include "structures.h"
 #include "functions.h"
-#include <math.h>
-#include <QVector2D>
 
 class astar: public functions
 {
 public:
 
     astar(testwindow*);
-    QList<OneCell> getNeighbours(OneCell);
-    QList<QVector2D> reconstructPath();
-    void findPath();
-    float heuristics(QVector2D, QVector2D);
-    void initialize();
-    void drawPath(QList<QVector2D>);
-    void drawVisited(QList<QVector2D>);
-    QVector2D calculateOnBoardPosition(QVector2D);
+    astar() = delete;
+
+    QList<OneCell> GetNeighbours(OneCell);
+    QList<QVector2D> ReconstructPath();
+    QVector2D CalculateOnBoardPosition(QVector2D);
+    void FindPath();
+    float Heuristics(QVector2D, QVector2D);
+    void Initialize();
+    void DrawPath(QList<QVector2D>);
+    void DrawVisited(QList<QVector2D>);
 
     QList<QVector2D> visitedCells;
     QList<QVector2D> path;

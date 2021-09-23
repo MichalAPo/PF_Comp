@@ -4,7 +4,6 @@
 GenerateMaze::GenerateMaze(testwindow* window)
 {
     windowPointer = window;
-    //Initialize();
 }
 
 void GenerateMaze::Initialize()
@@ -54,7 +53,6 @@ bool GenerateMaze::IsValid(QVector2D pos)
 void GenerateMaze::Generate()
 {
     Initialize();
-    //bool a = true;
 
     while(true)
     {
@@ -91,10 +89,8 @@ void GenerateMaze::Generate()
 
         checkCell = checkCell + (maze[checkCell].directions[direction] * 2);
         pathCells.push_back(checkCell);
-        //a = false;
     }
     DrawMaze();
-    //maze.clear();
 }
 
 void GenerateMaze::DrawMaze()
@@ -107,7 +103,7 @@ void GenerateMaze::DrawMaze()
             QVector2D calPos = CalculateWorldPosition(pos, windowPointer->boardPosition);
             if(maze[pos].type == CellType::Wall)
             {
-                windowPointer->changeOneCell(OneCell(calPos,CellType::Wall), QColor(0,0,0,255));
+                windowPointer->ChangeOneCell(OneCell(calPos,CellType::Wall), QColor(0,0,0,255));
             }
         }
 
