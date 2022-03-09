@@ -31,9 +31,9 @@ public:
     QColor color = QColor(255,255,255,255);
     QPainter *paint;
     CellType type = CellType::Empty;
-    testwindow* test;
-    testwindow* test2;
-    testwindow* test3;
+    testwindow* aStarWindow;
+    testwindow* dfsWindow;
+    testwindow* bfsWindow;
     astar* astarPF;
     dfs* dfsPF;
     dfs* bfsPF;

@@ -5,26 +5,26 @@ mainmanager::mainmanager(QWidget *parent): QGraphicsView(parent)
     scene = new QGraphicsScene(0,0,screenWidth,screenHeight);
     setScene(scene);
 
-    pix = new QPixmap(screenWidth,screenHeight);
-    pix->fill(Qt::white);
+    pixMap = new QPixmap(screenWidth,screenHeight);
+    pixMap->fill(Qt::white);
 
-    paint = new QPainter(pix);
+    paint = new QPainter(pixMap);
     paint->setPen(QColor(0,0,0,255));
     paint->setBrush(QColor(255,255,255,255));
 
-    test = new testwindow(QVector2D(25.0f,25.0f), 31, paint);
-    test2 = new testwindow(QVector2D(360.0f,25.0f), 31, paint);
-    test3 = new testwindow(QVector2D(695.0f,25.0f), 31, paint);
+    aStarWindow = new testwindow(QVector2D(25.0f,25.0f), 31, paint);
+    dfsWindow = new testwindow(QVector2D(360.0f,25.0f), 31, paint);
+    bfsWindow = new testwindow(QVector2D(695.0f,25.0f), 31, paint);
 
-    astarPF = new astar(test);
-    dfsPF = new dfs(test2);
-    bfsPF = new dfs(test3);
+    astarPF = new astar(aStarWindow);
+    dfsPF = new dfs(dfsWindow);
+    bfsPF = new dfs(bfsWindow);
 
-    gen = new GenerateMaze(test);
-    gen2 = new GenerateMaze(test2);
-    gen3 = new GenerateMaze(test3);
+    generateMazeAStar = new GenerateMaze(aStarWindow);
+    generateMazeDFS = new GenerateMaze(dfsWindow);
+    generateMazeBFS = new GenerateMaze(bfsWindow);
 
-    scene->addPixmap(*pix);
+    scene->addPixmap(*pixMap);
 }
 
 void mainmanager::keyPressEvent(QKeyEvent *event)
@@ -62,13 +62,13 @@ void mainmanager::keyPressEvent(QKeyEvent *event)
         }
         case Qt::Key_Space:
         {
-            test->ClearPath();
-            test2->ClearPath();
-            test3->ClearPath();
+            aStarWindow->ClearPath();
+            dfsWindow->ClearPath();
+            bfsWindow->ClearPath();
 
             astarPF->FindPath();
-            dfsPF->FindPath('d');
-            bfsPF->FindPath('b');
+            dfsPF->FindPath(true);
+            bfsPF->FindPath(false);
 
             astarPF->DrawVisited(astarPF->visitedCells);
             dfsPF->DrawVisited(dfsPF->visitedCells);
@@ -78,29 +78,29 @@ void mainmanager::keyPressEvent(QKeyEvent *event)
             dfsPF->DrawPath(dfsPF->path);
             bfsPF->DrawPath(bfsPF->path);
 
-            scene->addPixmap(*pix);
+            scene->addPixmap(*pixMap);
             break;
         }
         case Qt::Key_C:
         {
-            test->ClearPath();
-            test2->ClearPath();
-            test3->ClearPath();
+            aStarWindow->ClearPath();
+            dfsWindow->ClearPath();
+            bfsWindow->ClearPath();
 
-            scene->addPixmap(*pix);
+            scene->addPixmap(*pixMap);
             break;
         }
         case Qt::Key_G:
         {
-            test->Clear();
-            test2->Clear();
-            test3->Clear();
-            gen->Generate();
-            gen2->maze = gen->maze;
-            gen3->maze = gen->maze;
-            gen2->DrawMaze();
-            gen3->DrawMaze();
-            scene->addPixmap(*pix);
+            aStarWindow->Clear();
+            dfsWindow->Clear();
+            bfsWindow->Clear();
+            generateMazeAStar->Generate();
+            generateMazeDFS->maze = generateMazeAStar->maze;
+            generateMazeBFS->maze = generateMazeAStar->maze;
+            generateMazeDFS->DrawMaze();
+            generateMazeBFS->DrawMaze();
+            scene->addPixmap(*pixMap);
             break;
         }
 
@@ -112,9 +112,9 @@ void mainmanager::mousePressEvent(QMouseEvent *event)
     if(event->buttons() == Qt::LeftButton)
     {
         OneCell cellPos = OneCell(QVector2D(event->scenePosition().x(), event->scenePosition().y()), type);
-        test->ChangeOneCell(cellPos, color);
-        test2->ChangeOneCell(cellPos, color);
-        test3->ChangeOneCell(cellPos, color);
-        scene->addPixmap(*pix);
+        aStarWindow->ChangeOneCell(cellPos, color);
+        dfsWindow->ChangeOneCell(cellPos, color);
+        bfsWindow->ChangeOneCell(cellPos, color);
+        scene->addPixmap(*pixMap);
     }
 }

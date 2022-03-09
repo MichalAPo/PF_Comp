@@ -13,7 +13,7 @@ public:
     dfs(testwindow*);
     dfs() = delete;
     void Initialize();
-    void FindPath(char);
+    void FindPath(bool);
     void DrawPath(QList<QVector2D>);
     void DrawVisited(QList<QVector2D>);
     QList<QVector2D> ReconstructPath();

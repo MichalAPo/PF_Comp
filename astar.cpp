@@ -1,16 +1,5 @@
 #include "astar.h"
 
-bool operator ==(const OneCell l, const QList<OneCell>::Iterator r)
-{
-    return l.position.x() == r->position.x() && l.position.y() == r->position.y();
-}
-
-bool operator ==(const OneCell l, const OneCell r)
-{
-    return l.position.x() == r.position.x() && l.position.y() == r.position.y();
-}
-
-
 astar::astar(testwindow* window)
 {
     this->windowPointer = window;
@@ -22,6 +11,7 @@ void astar::Initialize()
 {
     path.clear();
     visitedCells.clear();
+    cells.clear();
 
     startPos = windowPointer->startPos;
     targetPos = windowPointer->targetPos;
@@ -32,11 +22,11 @@ void astar::Initialize()
     {
         for(int x = 0; x<windowPointer->boardSize; x++)
         {
-            cells[QVector2D(x,y)] = OneCell(QVector2D(x,y));
+            cells[QVector2D(x,y)] = OneCell(CellType::Empty);
             cells[QVector2D(x,y)].ChangeGFH(std::numeric_limits<float>().max(), std::numeric_limits<float>().max(), std::numeric_limits<float>().max());
         }
     }
-    cells[startPos].ChangeGFH(0, 0, 0);
+    //cells[startPos].type=CellType::Start;
 }
 
 float astar::Heuristics(QVector2D a, QVector2D b)
@@ -44,18 +34,18 @@ float astar::Heuristics(QVector2D a, QVector2D b)
     return sqrt((powf((a.x() - b.x()),2)) + (powf((a.y() - b.y()),2)));
 }
 
-QList<OneCell> astar::GetNeighbours(OneCell cell)
+QList<OneCell> astar::GetNeighbours(QVector2D position)
 {
     QList<OneCell> neighbours;
 
     for(int i=0; i<4; i++)
     {
-        QVector2D p = cell.position + cells[cell.position].directions[i];
-        if (!IsInBounds(p, QVector2D(0,0), QVector2D(windowPointer->boardSize -1, windowPointer->boardSize -1)))
+        QVector2D p = position + cells[position].directions[i];
+        if (!IsInBounds(p, windowPointer->boardPosition, QVector2D(windowPointer->boardSize -1, windowPointer->boardSize -1)))
             continue;
-        int boardIndex = p.x() + p.y() * windowPointer->boardSize;
+        //int boardIndex = p.x() + p.y() * windowPointer->boardSize;
         OneCell a = cells[p];
-        if(windowPointer->board[boardIndex].type != CellType::Wall)
+        if(windowPointer->board[p].type != CellType::Wall)
             neighbours.push_back(a);
     }
     return neighbours;
@@ -72,22 +62,22 @@ void astar::FindPath()
             || !IsInBounds(targetPos, QVector2D(0,0), QVector2D(windowPointer->boardSize -1, windowPointer->boardSize -1)))
         return;
 
-    QVector<OneCell> closedList;
-    QVector<OneCell> openList;
+    QVector<QVector2D> closedList;
+    QVector<QVector2D> openList;
 
     OneCell currentCell;
 
-    openList.push_back(OneCell(startPos, CellType::Start));
+    openList.push_back(startPos);
 
     while(!openList.isEmpty())
     {
         float fmin = std::numeric_limits<float>().max();
         for(auto it = openList.begin(); it !=openList.end(); ++it)
         {
-            if(it->f < fmin)
+            if(cells[it].f < fmin)
             {
-                currentCell.position = it->position;
-                fmin = it->f;
+                currentCell = it;
+                fmin = cells[it].f;
             }
         }
 
@@ -157,8 +147,9 @@ void astar::DrawPath(QList<QVector2D> path)
 {
     for(auto it = path.begin(); it !=path.end(); ++it)
     {
-            QVector2D a = QVector2D((it->x() * cellSize)+windowPointer->boardPosition.x(), (it->y() * cellSize)+windowPointer->boardPosition.y());
-            windowPointer->ChangeOneCell(OneCell(a, CellType::Path), QColor(0,80,200,255));
+            QVector2D currentCell = QVector2D((it->x() * cellSize)+windowPointer->boardPosition.x(), (it->y() * cellSize)+windowPointer->boardPosition.y());
+            windowPointer->ChangeOneCell(OneCell(currentCell, CellType::Path), QColor(0,80,200,255));
+            //windowPointer->TypeText(currentCell, QString::number(cells[QVector2D(it->x(),it->y())].parentPosition.x())+","+QString::number(cells[QVector2D(it->x(),it->y())].parentPosition.y()));
     }
 }
 

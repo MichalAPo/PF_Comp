@@ -9,6 +9,7 @@ GenerateMaze::GenerateMaze(testwindow* window)
 void GenerateMaze::Initialize()
 {
     pathCells = QList<QVector2D>();
+    maze.clear();
 
     for(int y=0; y<windowPointer->boardSize; y++)
     {

@@ -7,22 +7,16 @@
 
 enum CellType{Start, Goal, Wall, Check, Empty, Path, Visited};
 
-constexpr inline bool operator <(QVector2D v1, QVector2D v2) noexcept
-    {
-        return v1.x() < v2.x() || v1.y() < v2.y();
-    }
-
 static int cellSize = 10;
 static int screenWidth = 1050;
 static int screenHeight = 600;
 
 struct OneCell
 {
-  QVector2D position;
   QVector2D parentPosition = QVector2D(0,0);
   CellType type;
   bool visited = false;
-  float g,h,f;
+  float g=0,h=0,f=0;
 
   QList<QVector2D> directions =
   {
@@ -32,9 +26,8 @@ struct OneCell
       QVector2D(-1,0)
   };
 
-  OneCell(QVector2D position = QVector2D(0,0), CellType type = CellType::Empty)
+  OneCell(CellType type = CellType::Empty)
   {
-      this->position = position;
       this->type = type;
   }
 
@@ -51,11 +44,11 @@ struct OneCell
       this->h = h;
       this->f = this->g + this->h;
   }
-
-  bool operator ==(const OneCell r)
-  {
-      return this->position.x() == r.position.x() && this->position.y() == r.position.y();
-  }
 };
+
+constexpr inline bool operator <(QVector2D v1, QVector2D v2) noexcept
+    {
+        return v1.x() < v2.x() || v1.y() < v2.y();
+    }
 
 #endif // STRUCTURES_H

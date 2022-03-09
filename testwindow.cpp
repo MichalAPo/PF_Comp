@@ -6,7 +6,6 @@ testwindow::testwindow(QVector2D pos, int size, QPainter* paint)
     paintPointer = paint;
     boardPosition = pos;
     CreateBoard();
-
 }
 
 void testwindow::DrawBoard(){
@@ -21,7 +20,7 @@ void testwindow::CreateBoard()
 {
     for(int i=0; i<boardSize; i++){
         for(int j=0; j<boardSize; j++){
-                board.push_back(OneCell(QVector2D(j,i)));
+                board[QVector2D(j,i)] = OneCell(QVector2D(j,i));
             }
         }
     DrawBoard();
@@ -55,19 +54,15 @@ void testwindow::Clear()
 
 void testwindow::ChangeOneCell(OneCell cellPar, QColor color)
 {
-    if(!IsInBounds(cellPar.position, boardPosition, QVector2D(boardPosition.x()+(boardSize*cellSize), boardPosition.y()+(boardSize*cellSize))))
+    if(!IsInBounds(cellPar.position, boardPosition, boardPosition + QVector2D((boardSize*cellSize), (boardSize*cellSize))))
         return;
 
     paintPointer->setBrush(color);
 
-    int boardPos = CalculateIndex(cellPar.position, boardPosition, boardSize);
+    QVector2D boardPos = CalculateOnBoardPosition(cellPar.position, boardPosition);
+    board[boardPos]=OneCell(boardPos, cellPar.type);
 
-    if(boardPos < 0 || boardPos > board.count())
-        return;
-
-    board.replace(boardPos, OneCell(board.at(boardPos).position, cellPar.type));
-
-    QVector2D cPos = CalculateWorldPosition(board.at(boardPos).position, boardPosition);
+    QVector2D cPos = CalculateWorldPosition(boardPos, boardPosition);
     paintPointer->drawRect(cPos.x(),cPos.y(),cellSize,cellSize);
 
     if(paintPointer->brush().color() == QColor(0,255,0,255))
@@ -78,7 +73,7 @@ void testwindow::ChangeOneCell(OneCell cellPar, QColor color)
             QVector2D drawPos = CalculateWorldPosition(startPos, boardPosition);
             paintPointer->drawRect(drawPos.x(),drawPos.y(),cellSize,cellSize);
         }
-        startPos = board.at(boardPos).position;
+        startPos = board[boardPos].position;
         paintPointer->setBrush(QColor(0,255,0,255));
     }
 
@@ -90,13 +85,14 @@ void testwindow::ChangeOneCell(OneCell cellPar, QColor color)
             QVector2D drawPos = CalculateWorldPosition(targetPos, boardPosition);
             paintPointer->drawRect(drawPos.x(),drawPos.y(),cellSize,cellSize);
         }
-        targetPos = board.at(boardPos).position;
+        targetPos = board[boardPos].position;
         paintPointer->setBrush(QColor(255,0,0,255));
     }
 }
 
 void testwindow::TypeText(QVector2D pos, QString text)
 {
+    paintPointer->setFont(QFont("times",5));
     paintPointer->drawText(QRect(pos.x(), pos.y(), cellSize, cellSize), Qt::AlignCenter, text);
 }
 

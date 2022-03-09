@@ -22,7 +22,8 @@ public:
     QVector2D boardPosition;
     int boardSize=1;
     QPainter* paintPointer;
-    QList<OneCell> board;
+    //QList<OneCell> board;
+    QMap<QVector2D, OneCell> board;
     QVector2D startPos = QVector2D(-1,-1);
     QVector2D targetPos = QVector2D(-1,-1);
 };
