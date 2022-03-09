@@ -111,10 +111,11 @@ void mainmanager::mousePressEvent(QMouseEvent *event)
 {
     if(event->buttons() == Qt::LeftButton)
     {
-        OneCell cellPos = OneCell(QVector2D(event->scenePosition().x(), event->scenePosition().y()), type);
-        aStarWindow->ChangeOneCell(cellPos, color);
-        dfsWindow->ChangeOneCell(cellPos, color);
-        bfsWindow->ChangeOneCell(cellPos, color);
+        QVector2D mousePosition = QVector2D(event->scenePosition().x(), event->scenePosition().y());
+        //OneCell cellPos = OneCell(QVector2D(event->scenePosition().x(), event->scenePosition().y()), type);
+        aStarWindow->ChangeOneCell(mousePosition, color, type);
+        dfsWindow->ChangeOneCell(mousePosition, color, type);
+        bfsWindow->ChangeOneCell(mousePosition, color, type);
         scene->addPixmap(*pixMap);
     }
 }

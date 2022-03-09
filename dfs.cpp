@@ -22,7 +22,7 @@ void dfs::Initialize()
 
     for(int y = 0; y<windowPointer->boardSize; y++)
         for(int x = 0; x<windowPointer->boardSize; x++)
-            cells[QVector2D(x,y)] = OneCell(QVector2D(x,y));
+            cells[QVector2D(x,y)] = OneCell(CellType::Empty);
 }
 
 //dfs = true -> dfs algorithm, dfs = false bfs algorithm
@@ -111,7 +111,7 @@ void dfs::DrawPath(QList<QVector2D> path)
     for(auto it = path.begin(); it !=path.end(); ++it)
     {
             QVector2D currentCell = QVector2D((it->x() * cellSize)+windowPointer->boardPosition.x(), (it->y() * cellSize)+windowPointer->boardPosition.y());
-            windowPointer->ChangeOneCell(OneCell(currentCell, CellType::Path), QColor(0,80,200,255));
+            windowPointer->ChangeOneCell(currentCell, QColor(0,80,200,255), CellType::Path);
             //windowPointer->TypeText(currentCell, QString::number(cells[QVector2D(it->x(),it->y())].parentPosition.x())+","+QString::number(cells[QVector2D(it->x(),it->y())].parentPosition.y()));
     }
 }
@@ -120,7 +120,7 @@ void dfs::DrawVisited(QList<QVector2D> visited)
 {
     for(auto it = visited.begin(); it !=visited.end(); ++it)
     {
-        QVector2D a = QVector2D((it->x() * cellSize)+windowPointer->boardPosition.x(), (it->y() * cellSize)+windowPointer->boardPosition.y());
-        windowPointer->ChangeOneCell(OneCell(a, CellType::Visited), QColor(255,200,180,255));
+        QVector2D currentCell = QVector2D((it->x() * cellSize)+windowPointer->boardPosition.x(), (it->y() * cellSize)+windowPointer->boardPosition.y());
+        windowPointer->ChangeOneCell(currentCell, QColor(255,200,180,255), CellType::Visited);
     }
 }

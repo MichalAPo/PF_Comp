@@ -26,9 +26,14 @@ struct OneCell
       QVector2D(-1,0)
   };
 
-  OneCell(CellType type = CellType::Empty)
+  OneCell(CellType type)
   {
       this->type = type;
+  }
+
+  OneCell()
+  {
+      this->type = CellType::Empty;
   }
 
   void ChangeGFH(float g, float f, float h)

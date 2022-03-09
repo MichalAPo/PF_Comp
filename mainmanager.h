@@ -27,7 +27,7 @@ public:
     void AddToScene();
 
     QGraphicsScene* scene;
-    QPixmap* pix;
+    QPixmap* pixMap;
     QColor color = QColor(255,255,255,255);
     QPainter *paint;
     CellType type = CellType::Empty;
@@ -37,9 +37,9 @@ public:
     astar* astarPF;
     dfs* dfsPF;
     dfs* bfsPF;
-    GenerateMaze* gen;
-    GenerateMaze* gen2;
-    GenerateMaze* gen3;
+    GenerateMaze* generateMazeAStar;
+    GenerateMaze* generateMazeDFS;
+    GenerateMaze* generateMazeBFS;
 };
 
 #endif // MAINMANAGER_H

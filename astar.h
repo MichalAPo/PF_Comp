@@ -15,7 +15,7 @@ public:
     astar(testwindow*);
     astar() = delete;
 
-    QList<OneCell> GetNeighbours(QVector2D);
+    QList<QVector2D> GetNeighbours(QVector2D);
     QList<QVector2D> ReconstructPath();
     QVector2D CalculateOnBoardPosition(QVector2D);
     void FindPath();

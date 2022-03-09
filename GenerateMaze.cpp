@@ -15,7 +15,7 @@ void GenerateMaze::Initialize()
     {
         for(int x=0; x<windowPointer->boardSize; x++)
         {
-            maze[QVector2D(x,y)] = OneCell(QVector2D(x,y), CellType::Wall);
+            maze[QVector2D(x,y)] = OneCell(CellType::Wall);
         }
     }
 
@@ -104,7 +104,7 @@ void GenerateMaze::DrawMaze()
             QVector2D calPos = CalculateWorldPosition(pos, windowPointer->boardPosition);
             if(maze[pos].type == CellType::Wall)
             {
-                windowPointer->ChangeOneCell(OneCell(calPos,CellType::Wall), QColor(0,0,0,255));
+                windowPointer->ChangeOneCell(calPos, QColor(0,0,0,255), CellType::Wall);
             }
         }
 

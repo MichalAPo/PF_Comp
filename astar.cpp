@@ -34,19 +34,18 @@ float astar::Heuristics(QVector2D a, QVector2D b)
     return sqrt((powf((a.x() - b.x()),2)) + (powf((a.y() - b.y()),2)));
 }
 
-QList<OneCell> astar::GetNeighbours(QVector2D position)
+QList<QVector2D> astar::GetNeighbours(QVector2D position)
 {
-    QList<OneCell> neighbours;
+    QList<QVector2D> neighbours;
 
     for(int i=0; i<4; i++)
     {
         QVector2D p = position + cells[position].directions[i];
-        if (!IsInBounds(p, windowPointer->boardPosition, QVector2D(windowPointer->boardSize -1, windowPointer->boardSize -1)))
+        if (!IsInBounds(p, QVector2D(0,0), QVector2D(windowPointer->boardSize -1, windowPointer->boardSize -1)))
             continue;
         //int boardIndex = p.x() + p.y() * windowPointer->boardSize;
-        OneCell a = cells[p];
         if(windowPointer->board[p].type != CellType::Wall)
-            neighbours.push_back(a);
+            neighbours.push_back(p);
     }
     return neighbours;
 }
@@ -65,7 +64,7 @@ void astar::FindPath()
     QVector<QVector2D> closedList;
     QVector<QVector2D> openList;
 
-    OneCell currentCell;
+    QVector2D currentCell;
 
     openList.push_back(startPos);
 
@@ -74,47 +73,47 @@ void astar::FindPath()
         float fmin = std::numeric_limits<float>().max();
         for(auto it = openList.begin(); it !=openList.end(); ++it)
         {
-            if(cells[it].f < fmin)
+            if(cells[*it].f < fmin)
             {
-                currentCell = it;
-                fmin = cells[it].f;
+                currentCell = *it;
+                fmin = cells[*it].f;
             }
         }
 
         openList.remove(openList.indexOf(currentCell));
 
-        QList<OneCell> neighbours = GetNeighbours(currentCell);
+        QList<QVector2D> neighbours = GetNeighbours(currentCell);
 
         for(auto it = neighbours.begin(); it !=neighbours.end(); ++it)
         {
-            float gScoreEstimated = currentCell.g + Heuristics(it->position, currentCell.position);
+            float gScoreEstimated = cells[currentCell].g + Heuristics(*it, currentCell);
 
-            if(gScoreEstimated > it->g)
+            if(gScoreEstimated > cells[*it].g)
                 continue;
 
-            it->CalculateF(gScoreEstimated, Heuristics(it->position, targetPos));
-            it->parentPosition = currentCell.position;
+            cells[*it].CalculateF(gScoreEstimated, Heuristics(*it, targetPos));
+            cells[*it].parentPosition = currentCell;
 
-            if(openList.contains(it))
-                if(it->f > openList.at(openList.indexOf(it)).f)
-                    continue;
+           // if(openList.contains(it))
+                //if(cells[*it].f > openList.at(openList.indexOf(it)).f)
+                    //continue;
 
-            if(closedList.contains(it))
-                if(it->f > closedList.at(closedList.indexOf(it)).f)
-                    continue;
+            //if(closedList.contains(it))
+                //if(it->f > closedList.at(closedList.indexOf(it)).f)
+                    //continue;
 
-            OneCell a = OneCell(it->position);
-            a.ChangeGFH(it->g, it->f, it->h);
-            a.parentPosition = it->parentPosition;
-            openList.push_back(a);
+            //OneCell a = OneCell(it->position);
+            //a.ChangeGFH(it->g, it->f, it->h);
+            //a.parentPosition = it->parentPosition;
+            openList.push_back(*it);
 
-            cells[it->position].CalculateF(gScoreEstimated, Heuristics(it->position, targetPos));
-            cells[it->position].parentPosition = currentCell.position;
+            cells[*it].CalculateF(gScoreEstimated, Heuristics(*it, targetPos));
+            cells[*it].parentPosition = currentCell;
 
-            if(it->position != startPos && it->position != targetPos)
-                visitedCells.push_back(it->position);
+            if(*it != startPos && *it != targetPos)
+                visitedCells.push_back(*it);
 
-            if(it->position == targetPos)
+            if(*it == targetPos)
             {
                 path = ReconstructPath();
                 return;
@@ -148,7 +147,7 @@ void astar::DrawPath(QList<QVector2D> path)
     for(auto it = path.begin(); it !=path.end(); ++it)
     {
             QVector2D currentCell = QVector2D((it->x() * cellSize)+windowPointer->boardPosition.x(), (it->y() * cellSize)+windowPointer->boardPosition.y());
-            windowPointer->ChangeOneCell(OneCell(currentCell, CellType::Path), QColor(0,80,200,255));
+            windowPointer->ChangeOneCell(currentCell, QColor(0,80,200,255), CellType::Path);
             //windowPointer->TypeText(currentCell, QString::number(cells[QVector2D(it->x(),it->y())].parentPosition.x())+","+QString::number(cells[QVector2D(it->x(),it->y())].parentPosition.y()));
     }
 }
@@ -157,8 +156,8 @@ void astar::DrawVisited(QList<QVector2D> visited)
 {
     for(auto it = visited.begin(); it !=visited.end(); ++it)
     {
-        QVector2D a = QVector2D((it->x() * cellSize)+windowPointer->boardPosition.x(), (it->y() * cellSize)+windowPointer->boardPosition.y());
-        windowPointer->ChangeOneCell(OneCell(a, CellType::Visited), QColor(255,200,180,255));
+        QVector2D currentCell = QVector2D((it->x() * cellSize)+windowPointer->boardPosition.x(), (it->y() * cellSize)+windowPointer->boardPosition.y());
+        windowPointer->ChangeOneCell(currentCell, QColor(255,200,180,255), CellType::Visited);
     }
 }
 

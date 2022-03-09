@@ -13,7 +13,7 @@ class testwindow: public QGraphicsRectItem, public functions
 public:
     testwindow(QVector2D, int, QPainter*);
     void CreateBoard();
-    void ChangeOneCell(OneCell, QColor);
+    void ChangeOneCell(QVector2D, QColor, CellType);
     void TypeText(QVector2D, QString);
     void DrawBoard();
     void ClearPath();
