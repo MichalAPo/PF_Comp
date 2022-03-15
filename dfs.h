@@ -2,7 +2,6 @@
 #define DFS_H
 
 #include <math.h>
-#include <QVector2D>
 #include "testwindow.h"
 #include "structures.h"
 #include "functions.h"
@@ -14,20 +13,18 @@ public:
     dfs() = delete;
     void Initialize();
     void FindPath(bool);
-    void DrawPath(QList<QVector2D>);
-    void DrawVisited(QList<QVector2D>);
-    QList<QVector2D> ReconstructPath();
+    QList<IntVector> ReconstructPath();
 
     testwindow* windowPointer;
-    QList<QVector2D> visitedCells;
-    QList<QVector2D> path;
-    QMap<QVector2D, OneCell> cells;
-    QVector2D startPos = QVector2D(0,0);
-    QVector2D targetPos = QVector2D(0,0);
+    QList<IntVector> visitedCells;
+    QList<IntVector> path;
+    OneCell board[boardSize][boardSize];
+    IntVector startPos = IntVector(0,0);
+    IntVector targetPos = IntVector(0,0);
 
     bool test = true;
-    QList<QVector2D> checkedCells;
-    QVector2D currentCell;
+    QList<IntVector> checkedCells;
+    IntVector currentCell;
 };
 
 #endif // DFS_H

@@ -11,11 +11,12 @@
 #include <QScreen>
 #include <QGuiApplication>
 #include <QBitmap>
+
 #include "testwindow.h"
-#include "structures.h"
 #include "astar.h"
 #include "GenerateMaze.h"
 #include "dfs.h"
+#include "DrawManager.h"
 
 
 class mainmanager: public QGraphicsView, public functions
@@ -40,6 +41,7 @@ public:
     GenerateMaze* generateMazeAStar;
     GenerateMaze* generateMazeDFS;
     GenerateMaze* generateMazeBFS;
+    DrawManager* drawManager;
 };
 
 #endif // MAINMANAGER_H

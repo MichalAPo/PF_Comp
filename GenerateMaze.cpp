@@ -1,5 +1,4 @@
 #include "GenerateMaze.h"
-#include <QMap>
 
 GenerateMaze::GenerateMaze(testwindow* window)
 {
@@ -8,44 +7,46 @@ GenerateMaze::GenerateMaze(testwindow* window)
 
 void GenerateMaze::Initialize()
 {
-    pathCells = QList<QVector2D>();
-    maze.clear();
+    firstTime = false;
+    pathCells = QList<IntVector>();
+    //maze.clear();
 
-    for(int y=0; y<windowPointer->boardSize; y++)
+    for(int y=0; y<boardSize; y++)
     {
-        for(int x=0; x<windowPointer->boardSize; x++)
+        for(int x=0; x<boardSize; x++)
         {
-            maze[QVector2D(x,y)] = OneCell(CellType::Wall);
+            board[x][y] = OneCell(CellType::Wall);
         }
     }
 
-    QVector2D firtsCell = QVector2D(1, 1);
+    IntVector firstCell = IntVector(1, 1);
 
-    maze[firtsCell].type = CellType::Empty;
-    checkCell = firtsCell;
+    board[firstCell.x()][firstCell.y()].type = CellType::Empty;
+    checkCell = firstCell;
     pathCells.push_back(checkCell);
 }
 
-bool GenerateMaze::IsValid(QVector2D pos)
+bool GenerateMaze::IsValid(IntVector pos)
 {
-    QVector2D offset[9] =
+    IntVector offset[9] =
     {
-        QVector2D(1,0),
-        QVector2D(0,1),
-        QVector2D(0,-1),
-        QVector2D(1,-1),
-        QVector2D(1,1),
-        QVector2D(-1,-1),
-        QVector2D(-1,1),
-        QVector2D(-1,0),
-        QVector2D(0,0)
+        IntVector(1,0),
+        IntVector(0,1),
+        IntVector(0,-1),
+        IntVector(1,-1),
+        IntVector(1,1),
+        IntVector(-1,-1),
+        IntVector(-1,1),
+        IntVector(-1,0),
+        IntVector(0,0)
     };
 
     for(int i = 0; i < 8; i++)
     {
-        if(maze[pos + offset[i]].type == CellType::Empty)
+        IntVector index = pos + offset[i];
+        if(board[index.x()][index.y()].type == CellType::Empty)
             return false;
-        if(!IsInBounds((pos + offset[i]), QVector2D(0,0), QVector2D(windowPointer->boardSize -1, windowPointer->boardSize -1)))
+        if(!IsInBounds((pos + offset[i]), IntVector(0,0)))
             return false;
     }
     return true;
@@ -53,60 +54,46 @@ bool GenerateMaze::IsValid(QVector2D pos)
 
 void GenerateMaze::Generate()
 {
-    Initialize();
-
-    while(true)
+    if(firstTime)
+        Initialize();
+    bool go = true;
+    while(go)
     {
         if(pathCells.empty())
             break;
 
-        if(maze[checkCell].directions.empty())
+        if(board[checkCell.x()][checkCell.y()].directions.empty())
         {
             checkCell = pathCells.last();
             pathCells.removeLast();
             continue;
         }
 
-        int direction = rand() % maze[checkCell].directions.count();
+        int direction = rand() % board[checkCell.x()][checkCell.y()].directions.count();
+        IntVector index = checkCell + (board[checkCell.x()][checkCell.y()].directions[direction] * 2);
 
-        if(!IsValid(checkCell + (maze[checkCell].directions[direction]) * 2))
+        if(!IsValid(index))
         {
-            maze[checkCell].directions.removeAt(direction);
+            board[checkCell.x()][checkCell.y()].directions.removeAt(direction);
             continue;
         }
 
-        maze[checkCell + (maze[checkCell].directions[direction] * 2)].type = CellType::Empty;
+        board[index.x()][index.y()].type = CellType::Empty;
 
-        if(checkCell.x() == (checkCell.x() + (maze[checkCell].directions[direction].x() * 2)))
+        if(checkCell.x() == index.x())
         {
-            QVector2D tempPos = QVector2D(checkCell.x(), ((checkCell.y() + (checkCell.y() + (maze[checkCell].directions[direction].y() * 2))))/2);
-            maze[tempPos].type = CellType::Empty;
+            IntVector tempPos = IntVector(checkCell.x(), ((checkCell.y() + index.y()))/2);
+            board[tempPos.x()][tempPos.y()].type = CellType::Empty;
         }
-        if(checkCell.y() == (checkCell.y() + (maze[checkCell].directions[direction].y() * 2)))
+        if(checkCell.y() == index.y())
         {
-            QVector2D tempPos = QVector2D((checkCell.x() + (checkCell.x() + (maze[checkCell].directions[direction].x() * 2)))/2, checkCell.y());
-            maze[tempPos].type = CellType::Empty;
+            IntVector tempPos = IntVector((checkCell.x() + index.x())/2, checkCell.y());
+            board[tempPos.x()][tempPos.y()].type = CellType::Empty;
         }
 
-        checkCell = checkCell + (maze[checkCell].directions[direction] * 2);
+        checkCell = index;
         pathCells.push_back(checkCell);
-    }
-    DrawMaze();
-}
 
-void GenerateMaze::DrawMaze()
-{
-    for(int y=0; y<windowPointer->boardSize; y++)
-    {
-        for(int x=0; x<windowPointer->boardSize; x++)
-        {
-            QVector2D pos = QVector2D(x,y);
-            QVector2D calPos = CalculateWorldPosition(pos, windowPointer->boardPosition);
-            if(maze[pos].type == CellType::Wall)
-            {
-                windowPointer->ChangeOneCell(calPos, QColor(0,0,0,255), CellType::Wall);
-            }
-        }
-
+        go=false;
     }
 }

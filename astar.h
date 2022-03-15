@@ -2,7 +2,6 @@
 #define ASTAR_H
 
 #include <math.h>
-#include <QVector2D>
 #include <limits>
 #include "testwindow.h"
 #include "structures.h"
@@ -15,21 +14,19 @@ public:
     astar(testwindow*);
     astar() = delete;
 
-    QList<QVector2D> GetNeighbours(QVector2D);
-    QList<QVector2D> ReconstructPath();
-    QVector2D CalculateOnBoardPosition(QVector2D);
+    QList<IntVector> GetNeighbours(IntVector);
+    QList<IntVector> ReconstructPath();
+    IntVector CalculateOnBoardPosition(IntVector);
     void FindPath();
-    float Heuristics(QVector2D, QVector2D);
+    float Heuristics(IntVector, IntVector);
     void Initialize();
-    void DrawPath(QList<QVector2D>);
-    void DrawVisited(QList<QVector2D>);
 
-    QList<QVector2D> visitedCells;
-    QList<QVector2D> path;
+    QList<IntVector> visitedCells;
+    QList<IntVector> path;
     testwindow* windowPointer;
-    QMap<QVector2D, OneCell> cells;
-    QVector2D startPos = QVector2D(0,0);
-    QVector2D targetPos = QVector2D(0,0);
+    OneCell board[boardSize][boardSize];
+    IntVector startPos = IntVector(0,0);
+    IntVector targetPos = IntVector(0,0);
 
 };
 #endif // ASTAR_H

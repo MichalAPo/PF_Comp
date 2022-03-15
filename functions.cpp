@@ -5,22 +5,28 @@ functions::functions()
 
 }
 
-QVector2D functions::CalculateOnBoardPosition(QVector2D pos, QVector2D boardPosition)
+IntVector functions::CalculateOnBoardPosition(IntVector pos, IntVector boardPosition)
 {
-    return QVector2D(floor(floor(pos.x() - boardPosition.x())/cellSize),
-                     floor(floor(pos.y() - boardPosition.y())/cellSize));
+    return IntVector(((pos.x() - boardPosition.x())/cellSize),
+                     ((pos.y() - boardPosition.y())/cellSize));
 }
 
-QVector2D functions::CalculateWorldPosition(QVector2D pos, QVector2D boardPosition)
+IntVector functions::CalculateWorldPosition(IntVector pos, IntVector boardPosition)
 {
-    return QVector2D((pos.x() * cellSize) + boardPosition.x(),
+    return IntVector((pos.x() * cellSize) + boardPosition.x(),
                      (pos.y() * cellSize) + boardPosition.y());
 }
 
-bool functions::IsInBounds(QVector2D pos,QVector2D lowerBounds ,QVector2D upperBounds)
+bool functions::IsInBounds(IntVector pos,IntVector boardPos)
 {
-    return pos.x() >= lowerBounds.x()
-            && pos.x() <= upperBounds.x()
-            && pos.y() >= lowerBounds.y()
-            && pos.y() <= upperBounds.y();
+    if(boardPos == IntVector(0,0))
+        return pos.x() >= boardPos.x()
+            && pos.x() <= boardPos.x()+boardSize
+            && pos.y() >= boardPos.y()
+            && pos.y() <= boardPos.y()+boardSize;
+    else
+        return pos.x() >= boardPos.x()
+            && pos.x() <= boardPos.x()+(boardSize*cellSize)
+            && pos.y() >= boardPos.y()
+            && pos.y() <= boardPos.y()+(boardSize*cellSize);
 }
