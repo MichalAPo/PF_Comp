@@ -1,19 +1,15 @@
-#ifndef FUNCTIONS_H
-#define FUNCTIONS_H
+#ifndef UTILS_H
+#define UTILS_H
 
 #include <QColor>
 #include <QPainter>
 #include "structures.h"
 
-class functions
+namespace utils
 {
-public:
-
-    functions();
-
     IntVector CalculateOnBoardPosition(IntVector, IntVector);
     IntVector CalculateWorldPosition(IntVector, IntVector);
     bool IsInBounds(IntVector, IntVector);
 };
 
-#endif // FUNCTIONS_H
+#endif // UTILS_H

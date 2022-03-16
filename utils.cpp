@@ -1,29 +1,24 @@
-#include "functions.h"
+#include "utils.h"
 
-functions::functions()
-{
-
-}
-
-IntVector functions::CalculateOnBoardPosition(IntVector pos, IntVector boardPosition)
+IntVector utils::CalculateOnBoardPosition(IntVector pos, IntVector boardPosition)
 {
     return IntVector(((pos.x() - boardPosition.x())/cellSize),
                      ((pos.y() - boardPosition.y())/cellSize));
 }
 
-IntVector functions::CalculateWorldPosition(IntVector pos, IntVector boardPosition)
+IntVector utils::CalculateWorldPosition(IntVector pos, IntVector boardPosition)
 {
     return IntVector((pos.x() * cellSize) + boardPosition.x(),
                      (pos.y() * cellSize) + boardPosition.y());
 }
 
-bool functions::IsInBounds(IntVector pos,IntVector boardPos)
+bool utils::IsInBounds(IntVector pos,IntVector boardPos)
 {
     if(boardPos == IntVector(0,0))
         return pos.x() >= boardPos.x()
-            && pos.x() <= boardPos.x()+boardSize
+            && pos.x() <= boardPos.x()+boardSize-1
             && pos.y() >= boardPos.y()
-            && pos.y() <= boardPos.y()+boardSize;
+            && pos.y() <= boardPos.y()+boardSize-1;
     else
         return pos.x() >= boardPos.x()
             && pos.x() <= boardPos.x()+(boardSize*cellSize)

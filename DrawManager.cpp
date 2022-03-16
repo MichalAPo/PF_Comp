@@ -1,11 +1,14 @@
 #include "DrawManager.h"
 
+using namespace utils;
+
 DrawManager::DrawManager(QPainter* paint)
 {
     paintPointer = paint;
 }
 
-void DrawManager::DrawBoard(testwindow* window){
+void DrawManager::DrawBoard(pathfindingbase* window){
+    //paintPointer->setBrush(QColor(0,0,0,255));
     for(int i=0; i<boardSize; i++){
         for(int j=0; j<boardSize; j++){
             IntVector worldPos = CalculateWorldPosition(IntVector(i,j), window->boardPosition);
@@ -14,22 +17,51 @@ void DrawManager::DrawBoard(testwindow* window){
     }
 }
 
-void DrawManager::ClearPath(testwindow* window)
-{
-    paintPointer->setBrush(QColor(255,255,255,255));
+void DrawManager::DrawTags(pathfindingbase* window){
+    paintPointer->setBrush(QColor(0,0,0,255));
     for(int i=0; i<boardSize; i++){
         for(int j=0; j<boardSize; j++){
-            if(window->board[i][j].type != CellType::Path || window->board[j][i].type != CellType::Visited)
-                continue;
-            IntVector worldPos = CalculateWorldPosition(IntVector(j,i), window->boardPosition);
-            paintPointer->drawRect(worldPos.x(),worldPos.y(),cellSize,cellSize);
-            window->ChangeType(IntVector(i,j), CellType::Empty);
-
+            IntVector position = CalculateWorldPosition(IntVector(j,i), window->boardPosition);
+            switch(window->board[j][i].type){
+                case CellType::Check:
+                TypeText(position, "C");
+                break;
+                case CellType::Empty:
+                TypeText(position, "E");
+                break;
+                case CellType::Target:
+                TypeText(position, "T");
+                break;
+                case CellType::Path:
+                TypeText(position, "P");
+                break;
+                case CellType::Start:
+                TypeText(position, "S");
+                break;
+                case CellType::Visited:
+                TypeText(position, "V");
+                break;
+                case CellType::Wall:
+                TypeText(position, "W");
+                break;
+            }
         }
     }
 }
 
-void DrawManager::Clear(testwindow* window)
+void DrawManager::ClearPath(pathfindingbase* window)
+{
+    for(int i=0; i<boardSize; i++){
+        for(int j=0; j<boardSize; j++){
+            if(window->board[j][i].type != CellType::Path && window->board[j][i].type != CellType::Visited)
+                continue;
+            IntVector worldPos = IntVector((j * cellSize)+window->boardPosition.x(), (i * cellSize)+window->boardPosition.y());
+            ChangeOneCell(window, worldPos, QColor(255,255,255,255), CellType::Empty);
+        }
+    }
+}
+
+void DrawManager::Clear(pathfindingbase* window)
 {
     window->startPos = IntVector(-1,-1);
     window->targetPos = IntVector(-1,-1);
@@ -37,13 +69,12 @@ void DrawManager::Clear(testwindow* window)
     for(int i=0; i<boardSize; i++){
         for(int j=0; j<boardSize; j++){
             IntVector worldPos = CalculateWorldPosition(IntVector(i,j), window->boardPosition);
-            paintPointer->drawRect(worldPos.x(),worldPos.y(),cellSize,cellSize);
-            window->ChangeType(IntVector(i,j), CellType::Empty);
+            ChangeOneCell(window, worldPos, QColor(255,255,255,255), CellType::Empty);
         }
     }
 }
 
-void DrawManager::ChangeOneCell(testwindow* window, IntVector cellPosition, QColor color, CellType type)
+void DrawManager::ChangeOneCell(pathfindingbase* window, IntVector cellPosition, QColor color, CellType type)
 {
     IntVector boardPosition = window->boardPosition;
     if(!IsInBounds(cellPosition, boardPosition))
@@ -52,19 +83,22 @@ void DrawManager::ChangeOneCell(testwindow* window, IntVector cellPosition, QCol
     paintPointer->setBrush(color);
 
     IntVector boardPos = CalculateOnBoardPosition(cellPosition, boardPosition);
-    window->ChangeType(boardPos, type);
+    window->board[boardPos.x()][boardPos.y()] = OneCell(type);
+
+    if(!IsInBounds(boardPos, IntVector(0,0)))
+        return;
 
     IntVector cPos = CalculateWorldPosition(boardPos, boardPosition);
     paintPointer->drawRect(cPos.x(),cPos.y(),cellSize,cellSize);
 
     if(paintPointer->brush().color() == QColor(0,255,0,255))
     {
-        if(IsInBounds(window->startPos, IntVector(0,0)))
+        if(IsInBounds(window->startPos, IntVector(0,0)) && boardPos != window->startPos)
         {
             paintPointer->setBrush(QColor(255,255,255,255));
             IntVector drawPos = CalculateWorldPosition(window->startPos, boardPosition);
             paintPointer->drawRect(drawPos.x(),drawPos.y(),cellSize,cellSize);
-            window->ChangeType(drawPos, CellType::Empty);
+            window->board[window->startPos.x()][window->startPos.y()] = OneCell(CellType::Empty);
         }
         window->startPos = boardPos;
         paintPointer->setBrush(QColor(0,255,0,255));
@@ -72,12 +106,12 @@ void DrawManager::ChangeOneCell(testwindow* window, IntVector cellPosition, QCol
 
     else if(paintPointer->brush().color() == QColor(255,0,0,255))
     {
-        if(IsInBounds(window->targetPos, IntVector(0,0)))
+        if(IsInBounds(window->targetPos, IntVector(0,0)) && boardPos != window->targetPos)
         {
             paintPointer->setBrush(QColor(255,255,255,255));
             IntVector drawPos = CalculateWorldPosition(window->targetPos, boardPosition);
             paintPointer->drawRect(drawPos.x(),drawPos.y(),cellSize,cellSize);
-            window->ChangeType(drawPos, CellType::Empty);
+            window->board[window->targetPos.x()][window->targetPos.y()] = OneCell(CellType::Empty);
         }
         window->targetPos = boardPos;
         paintPointer->setBrush(QColor(255,0,0,255));
@@ -90,37 +124,36 @@ void DrawManager::TypeText(IntVector pos, QString text)
     paintPointer->drawText(QRect(pos.x(), pos.y(), cellSize, cellSize), Qt::AlignCenter, text);
 }
 
-/*
-void DrawManager::DrawPath(QList<IntVector> path)
+
+void DrawManager::DrawPath(pathfindingbase* window)
 {
-    for(auto it = path.begin(); it !=path.end(); ++it)
+    for(auto it = window->path.begin(); it !=window->path.end(); ++it)
     {
-            IntVector currentCell = IntVector((it->x() * cellSize)+windowPointer->boardPosition.x(), (it->y() * cellSize)+windowPointer->boardPosition.y());
-            ChangeOneCell(currentCell, QColor(0,80,200,255), CellType::Path);
-            //windowPointer->TypeText(currentCell, QString::number(cells[QVector2D(it->x(),it->y())].parentPosition.x())+","+QString::number(cells[QVector2D(it->x(),it->y())].parentPosition.y()));
+        IntVector currentCell = IntVector((it->x() * cellSize)+window->boardPosition.x(), (it->y() * cellSize)+window->boardPosition.y());
+        ChangeOneCell(window, currentCell, QColor(0,80,200,255), CellType::Path);
     }
 }
 
-void DrawManager::DrawVisited(QList<IntVector> visited)
+void DrawManager::DrawVisited(pathfindingbase* window)
 {
-    for(auto it = visited.begin(); it !=visited.end(); ++it)
+    for(auto it = window->visitedCells.begin(); it != window->visitedCells.end(); ++it)
     {
-        IntVector currentCell = IntVector((it->x() * cellSize)+windowPointer->boardPosition.x(), (it->y() * cellSize)+windowPointer->boardPosition.y());
-        ChangeOneCell(currentCell, QColor(255,200,180,255), CellType::Visited);
+        IntVector currentCell = IntVector((it->x() * cellSize)+window->boardPosition.x(), (it->y() * cellSize)+window->boardPosition.y());
+        ChangeOneCell(window, currentCell, QColor(255,200,180,255), CellType::Visited);
     }
-}*/
+}
 
-void DrawManager::DrawMaze(testwindow* window, GenerateMaze* maze)
+void DrawManager::DrawMaze(pathfindingbase* window, pathfindingbase* maze)
 {
     for(int y=0; y<boardSize; y++)
     {
         for(int x=0; x<boardSize; x++)
         {
             IntVector calPos = CalculateWorldPosition(IntVector(x,y), window->boardPosition);
-            if(maze->board[x][y].type == CellType::Wall)
+            if(maze->maze[x][y].type == CellType::Wall)
             {
                 ChangeOneCell(window, calPos, QColor(0,0,0,255), CellType::Wall);
-                window->board[x][y].type = CellType::Wall;
+                window->board[x][y] = OneCell(CellType::Wall);
             }
         }
 

@@ -12,17 +12,9 @@ mainmanager::mainmanager(QWidget *parent): QGraphicsView(parent)
     paint->setPen(QColor(0,0,0,255));
     paint->setBrush(QColor(255,255,255,255));
 
-    aStarWindow = new testwindow(IntVector(25,25));
-    dfsWindow = new testwindow(IntVector(360,25));
-    bfsWindow = new testwindow(IntVector(695,25));
-
-    astarPF = new astar(aStarWindow);
-    dfsPF = new dfs(dfsWindow);
-    bfsPF = new dfs(bfsWindow);
-
-    generateMazeAStar = new GenerateMaze(aStarWindow);
-    generateMazeDFS = new GenerateMaze(dfsWindow);
-    generateMazeBFS = new GenerateMaze(bfsWindow);
+    aStarWindow = new astar(IntVector(25,25));
+    dfsWindow = new dfs(IntVector(360,25));
+    bfsWindow = new dfs(IntVector(695,25));
 
     drawManager = new DrawManager(paint);
     drawManager->DrawBoard(aStarWindow);
@@ -46,7 +38,7 @@ void mainmanager::keyPressEvent(QKeyEvent *event)
         case Qt::Key_2:
         {
             //Goal
-            type = CellType::Goal;
+            type = CellType::Target;
             color = QColor(255,0,0,255);
             break;
         }
@@ -62,51 +54,48 @@ void mainmanager::keyPressEvent(QKeyEvent *event)
             //Empty
             type = CellType::Empty;
             color = QColor(255,255,255,255);
-            bfsPF->ReconstructPath();
             break;
         }
         case Qt::Key_Space:
         {
-        /*
-            aStarWindow->ClearPath();
-            dfsWindow->ClearPath();
-            bfsWindow->ClearPath();*/
+            drawManager->ClearPath(aStarWindow);
+            drawManager->ClearPath(dfsWindow);
+            drawManager->ClearPath(bfsWindow);
 
-            astarPF->FindPath();
-            dfsPF->FindPath(true);
-            bfsPF->FindPath(false);
-/*
-            astarPF->DrawVisited(astarPF->visitedCells);
-            dfsPF->DrawVisited(dfsPF->visitedCells);
-            bfsPF->DrawVisited(bfsPF->visitedCells);
+            aStarWindow->FindPath();
+            dfsWindow->FindPath(true);
+            bfsWindow->FindPath(false);
 
-            astarPF->DrawPath(astarPF->path);
-            dfsPF->DrawPath(dfsPF->path);
-            bfsPF->DrawPath(bfsPF->path);*/
+            drawManager->DrawVisited(aStarWindow);
+            drawManager->DrawVisited(dfsWindow);
+            drawManager->DrawVisited(bfsWindow);
+
+            drawManager->DrawPath(aStarWindow);
+            drawManager->DrawPath(dfsWindow);
+            drawManager->DrawPath(bfsWindow);
+
+            drawManager->DrawTags(dfsWindow);
 
             scene->addPixmap(*pixMap);
             break;
         }
         case Qt::Key_C:
-        {/*
-            aStarWindow->ClearPath();
-            dfsWindow->ClearPath();
-            bfsWindow->ClearPath();*/
-
+        {
+            drawManager->ClearPath(aStarWindow);
+            drawManager->ClearPath(dfsWindow);
+            drawManager->ClearPath(bfsWindow);
             scene->addPixmap(*pixMap);
             break;
         }
         case Qt::Key_G:
-        {/*
-            aStarWindow->Clear();
-            dfsWindow->Clear();
-            bfsWindow->Clear();*/
-            generateMazeAStar->Generate();
-            //generateMazeDFS->board = generateMazeAStar->board;
-            //generateMazeBFS->board = generateMazeAStar->board;
-            drawManager->DrawMaze(aStarWindow, generateMazeAStar);
-            //generateMazeDFS->DrawMaze();
-            //generateMazeBFS->DrawMaze();
+        {
+            drawManager->Clear(aStarWindow);
+            drawManager->Clear(dfsWindow);
+            drawManager->Clear(bfsWindow);
+            aStarWindow->GenerateMaze();
+            drawManager->DrawMaze(aStarWindow, aStarWindow);
+            drawManager->DrawMaze(dfsWindow, aStarWindow);
+            drawManager->DrawMaze(bfsWindow, aStarWindow);
             scene->addPixmap(*pixMap);
             break;
         }

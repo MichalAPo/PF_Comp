@@ -12,14 +12,12 @@
 #include <QGuiApplication>
 #include <QBitmap>
 
-#include "testwindow.h"
 #include "astar.h"
-#include "GenerateMaze.h"
 #include "dfs.h"
 #include "DrawManager.h"
+#include "pathfindingbase.h"
 
-
-class mainmanager: public QGraphicsView, public functions
+class mainmanager: public QGraphicsView
 {
 public:
     mainmanager(QWidget *parent=NULL);
@@ -32,15 +30,11 @@ public:
     QColor color = QColor(255,255,255,255);
     QPainter *paint;
     CellType type = CellType::Empty;
-    testwindow* aStarWindow;
-    testwindow* dfsWindow;
-    testwindow* bfsWindow;
-    astar* astarPF;
-    dfs* dfsPF;
-    dfs* bfsPF;
-    GenerateMaze* generateMazeAStar;
-    GenerateMaze* generateMazeDFS;
-    GenerateMaze* generateMazeBFS;
+
+    astar* aStarWindow;
+    dfs* dfsWindow;
+    dfs* bfsWindow;
+    // /\ iterativebase:pfbase for dfs i bfs
     DrawManager* drawManager;
 };
 

@@ -4,10 +4,10 @@
 #include <QString>
 #include <QList>
 
-enum CellType{Start, Goal, Wall, Check, Empty, Path, Visited};
+enum CellType{Start, Target, Wall, Check, Empty, Path, Visited};
 
 static const int cellSize = 10;
-static const int boardSize = 10;
+static const int boardSize = 31;
 static const int screenWidth = 1050;
 static const int screenHeight = 600;
 
@@ -41,7 +41,7 @@ struct IntVector
 struct OneCell
 {
   IntVector parentPosition = IntVector(0,0);
-  CellType type;
+  CellType type = CellType::Empty;
   bool visited = false;
   float g=std::numeric_limits<float>().max(),h=std::numeric_limits<float>().max(),f=std::numeric_limits<float>().max();
 
@@ -58,10 +58,7 @@ struct OneCell
       this->type = type;
   }
 
-  OneCell()
-  {
-      this->type = CellType::Empty;
-  }
+  OneCell(){}
 
   void ChangeGFH(float g, float f, float h)
   {
@@ -95,7 +92,7 @@ inline bool operator ==(IntVector v1, IntVector v2)
 
 inline bool operator !=(IntVector v1, IntVector v2)
 {
-    return v1.x() != v2.x() && v1.y() != v2.y();
+    return v1.x() != v2.x() || v1.y() != v2.y();
 }
 
 inline IntVector operator +(IntVector v1, IntVector v2)

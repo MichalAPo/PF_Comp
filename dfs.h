@@ -2,29 +2,16 @@
 #define DFS_H
 
 #include <math.h>
-#include "testwindow.h"
+#include "pathfindingbase.h"
 #include "structures.h"
-#include "functions.h"
+#include "utils.h"
 
-class dfs: public functions
+class dfs: public pathfindingbase
 {
 public:
-    dfs(testwindow*);
-    dfs() = delete;
-    void Initialize();
-    void FindPath(bool);
-    QList<IntVector> ReconstructPath();
-
-    testwindow* windowPointer;
-    QList<IntVector> visitedCells;
-    QList<IntVector> path;
-    OneCell board[boardSize][boardSize];
-    IntVector startPos = IntVector(0,0);
-    IntVector targetPos = IntVector(0,0);
-
+    dfs(IntVector);
     bool test = true;
-    QList<IntVector> checkedCells;
-    IntVector currentCell;
+    void FindPath(bool) override;
 };
 
 #endif // DFS_H

@@ -1,31 +1,11 @@
 #include "astar.h"
 
-astar::astar(testwindow* window)
+using namespace utils;
+
+astar::astar(IntVector bPos): pathfindingbase(bPos)
 {
-    this->windowPointer = window;
     path = QList<IntVector>();
     visitedCells = QList<IntVector>();
-}
-
-void astar::Initialize()
-{
-    path.clear();
-    visitedCells.clear();
-
-    startPos = windowPointer->startPos;
-    targetPos = windowPointer->targetPos;
-
-    //cells = QMap<IntVector, OneCell>();
-
-    for(int y = 0; y<boardSize; y++)
-    {
-        for(int x = 0; x<boardSize; x++)
-        {
-            board[x][y] = OneCell(CellType::Empty);
-            //board[x][y].ChangeGFH(std::numeric_limits<float>().max(), std::numeric_limits<float>().max(), std::numeric_limits<float>().max());
-        }
-    }
-    //cells[startPos].type=CellType::Start;
 }
 
 float astar::Heuristics(IntVector a, IntVector b)
@@ -43,7 +23,7 @@ QList<IntVector> astar::GetNeighbours(IntVector position)
         if (!IsInBounds(p, IntVector(0,0)))
             continue;
         //int boardIndex = p.x() + p.y() * windowPointer->boardSize;
-        if(windowPointer->board[p.x()][p.y()].type != CellType::Wall)
+        if(board[p.x()][p.y()].type != CellType::Wall)
             neighbours.push_back(p);
     }
     return neighbours;
@@ -122,23 +102,4 @@ void astar::FindPath()
         closedList.push_back(currentCell);
     }
 }
-
-QList<IntVector> astar::ReconstructPath()
-{
-    QList<IntVector> path = QList<IntVector>();
-    IntVector pos = board[targetPos.x()][targetPos.y()].parentPosition;
-    path.push_back(pos);
-
-    while(pos != startPos)
-    {
-        pos = board[pos.x()][pos.y()].parentPosition;
-
-        if(pos != startPos)
-        {
-            path.push_back(pos);
-        }
-    }
-    return path;
-}
-
 

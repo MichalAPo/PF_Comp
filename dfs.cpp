@@ -1,33 +1,12 @@
 #include "dfs.h"
 #include "QDebug"
 
-dfs::dfs(testwindow* window)
+using namespace utils;
+
+dfs::dfs(IntVector bPos): pathfindingbase(bPos)
 {
-    this->windowPointer = window;
 }
 
-
-void dfs::Initialize()
-{
-    path.clear();
-    visitedCells.clear();
-    checkedCells.clear();
-    //cells.clear();
-
-    startPos = windowPointer->startPos;
-    targetPos = windowPointer->targetPos;
-    currentCell = startPos;
-
-    //cells = QMap<IntVector, OneCell>();
-
-    for(int y = 0; y<boardSize; y++){
-        for(int x = 0; x<boardSize; x++){
-            board[x][y] = OneCell(CellType::Empty);
-        }
-    }
-}
-
-//dfs = true -> dfs algorithm, dfs = false bfs algorithm
 void dfs::FindPath(bool dfs)
 {
     Initialize();
@@ -38,6 +17,7 @@ void dfs::FindPath(bool dfs)
             || !IsInBounds(targetPos, IntVector(0,0)))
         return;
 
+    currentCell = startPos;
     checkedCells.push_back(currentCell);
 
     while(!checkedCells.isEmpty() && test)
@@ -63,8 +43,9 @@ void dfs::FindPath(bool dfs)
 
         for(int i=0; i<4; i++)
         {
+            IntVector offset = board[currentCell.x()][currentCell.y()].directions[i];
             IntVector index = (currentCell + board[currentCell.x()][currentCell.y()].directions[i]);
-            if(windowPointer->board[index.x()][index.y()].type == CellType::Wall)
+            if(board[index.x()][index.y()].type == CellType::Wall)
                 continue;
             if (!IsInBounds(index, IntVector(0,0)))
                 continue;
@@ -89,22 +70,4 @@ void dfs::FindPath(bool dfs)
             }
         }
     }
-}
-
-QList<IntVector> dfs::ReconstructPath()
-{
-    QList<IntVector> path = QList<IntVector>();
-    IntVector pos = board[targetPos.x()][targetPos.y()].parentPosition;
-    path.push_back(pos);
-
-    while(pos != startPos)
-    {
-        pos = board[pos.x()][pos.y()].parentPosition;
-
-        if(pos != startPos)
-        {
-            path.push_back(pos);
-        }
-    }
-    return path;
 }

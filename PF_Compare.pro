@@ -10,23 +10,21 @@ CONFIG += c++11
 
 SOURCES += \
     DrawManager.cpp \
-    GenerateMaze.cpp \
     astar.cpp \
     dfs.cpp \
-    functions.cpp \
     main.cpp \
     mainmanager.cpp \
-    testwindow.cpp
+    pathfindingbase.cpp \
+    utils.cpp
 
 HEADERS += \
     DrawManager.h \
-    GenerateMaze.h \
     astar.h \
     dfs.h \
-    functions.h \
     mainmanager.h \
+    pathfindingbase.h \
     structures.h \
-    testwindow.h
+    utils.h
 
 FORMS +=
 
