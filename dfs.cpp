@@ -3,13 +3,10 @@
 
 using namespace utils;
 
-dfs::dfs(IntVector bPos): pathfindingbase(bPos)
-{
-}
-
 void dfs::FindPath(bool dfs)
 {
     Initialize();
+    board[targetPos.x()][targetPos.y()].visited = false;
 
     if(startPos == targetPos)
         return;
@@ -20,20 +17,20 @@ void dfs::FindPath(bool dfs)
     currentCell = startPos;
     checkedCells.push_back(currentCell);
 
-    while(!checkedCells.isEmpty() && test)
+    while(!checkedCells.empty() && test)
     {
         switch (dfs)
         {
             case true:
             {
-                currentCell = checkedCells.last();
-                checkedCells.removeLast();
+                currentCell = checkedCells.back();
+                checkedCells.pop_back();
                 break;
             }
             case false:
             {
-                currentCell = checkedCells.first();
-                checkedCells.removeFirst();
+                currentCell = checkedCells.front();
+                checkedCells.pop_front();
                 break;
             }
         }
@@ -49,7 +46,7 @@ void dfs::FindPath(bool dfs)
                 continue;
             if (!IsInBounds(index, IntVector(0,0)))
                 continue;
-            if (checkedCells.contains(index))
+            if (ListContains(checkedCells, index))
                 continue;
             if (board[index.x()][index.y()].visited)
                 continue;

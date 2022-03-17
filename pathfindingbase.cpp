@@ -26,9 +26,9 @@ void pathfindingbase::Initialize()
     checkedCells.clear();
 }
 
-QList<IntVector> pathfindingbase::ReconstructPath()
+std::list<IntVector> pathfindingbase::ReconstructPath()
 {
-    QList<IntVector> path = QList<IntVector>();
+    std::list<IntVector> path = std::list<IntVector>();
     IntVector pos = board[targetPos.x()][targetPos.y()].parentPosition;
     path.push_back(pos);
 
@@ -92,17 +92,17 @@ void pathfindingbase::GenerateMaze()
 
         if(maze[checkCell.x()][checkCell.y()].directions.empty())
         {
-            checkCell = mazePaths.last();
-            mazePaths.removeLast();
+            checkCell = mazePaths.back();
+            mazePaths.pop_back();
             continue;
         }
 
-        int direction = rand() % maze[checkCell.x()][checkCell.y()].directions.count();
+        int direction = rand() % maze[checkCell.x()][checkCell.y()].directions.size();
         IntVector index = checkCell + (maze[checkCell.x()][checkCell.y()].directions[direction] * 2);
 
         if(!IsValid(index))
         {
-            maze[checkCell.x()][checkCell.y()].directions.removeAt(direction);
+            maze[checkCell.x()][checkCell.y()].directions.erase(maze[checkCell.x()][checkCell.y()].directions.begin()+direction);
             continue;
         }
 

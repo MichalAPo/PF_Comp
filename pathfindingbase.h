@@ -3,6 +3,8 @@
 
 #include "structures.h"
 #include "utils.h"
+#include <list>
+#include <set>
 
 class pathfindingbase
 {
@@ -15,18 +17,18 @@ public:
     virtual void FindPath(bool){};
     bool IsValid(IntVector);
     void GenerateMaze();
-    QList<IntVector> ReconstructPath();
+    std::list<IntVector> ReconstructPath();
 
     IntVector boardPosition;
-    QList<IntVector> visitedCells;
-    QList<IntVector> path;
+    std::list<IntVector> visitedCells;
+    std::list<IntVector> path;
     OneCell board[boardSize][boardSize];
     OneCell maze[boardSize][boardSize];
     IntVector startPos;
     IntVector targetPos;
-    QList<IntVector> checkedCells;
+    std::list<IntVector> checkedCells;
     IntVector currentCell;
-    QList<IntVector> mazePaths;
+    std::list<IntVector> mazePaths;
     IntVector checkCell;
 };
 

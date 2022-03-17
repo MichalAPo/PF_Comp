@@ -1,13 +1,13 @@
-#include "DrawManager.h"
+#include "drawmanager.h"
 
 using namespace utils;
 
-DrawManager::DrawManager(QPainter* paint)
+drawmanager::drawmanager(QPainter* paint)
 {
     paintPointer = paint;
 }
 
-void DrawManager::DrawBoard(pathfindingbase* window){
+void drawmanager::DrawBoard(pathfindingbase* window){
     //paintPointer->setBrush(QColor(0,0,0,255));
     for(int i=0; i<boardSize; i++){
         for(int j=0; j<boardSize; j++){
@@ -15,9 +15,14 @@ void DrawManager::DrawBoard(pathfindingbase* window){
             paintPointer->drawRect(worldPos.x(),worldPos.y(),cellSize,cellSize);
         }
     }
+    QPen pen;
+    pen.setWidth(10); pen.setJoinStyle(Qt::MiterJoin);
+    paintPointer->setPen(pen);
+    paintPointer->drawRect(window->boardPosition.x()-5,window->boardPosition.y()-5,boardSize*cellSize+10,boardSize*cellSize+10);
+    paintPointer->setPen(Qt::NoPen);
 }
 
-void DrawManager::DrawTags(pathfindingbase* window){
+void drawmanager::DrawTags(pathfindingbase* window){
     paintPointer->setBrush(QColor(0,0,0,255));
     for(int i=0; i<boardSize; i++){
         for(int j=0; j<boardSize; j++){
@@ -49,7 +54,7 @@ void DrawManager::DrawTags(pathfindingbase* window){
     }
 }
 
-void DrawManager::ClearPath(pathfindingbase* window)
+void drawmanager::ClearPath(pathfindingbase* window)
 {
     for(int i=0; i<boardSize; i++){
         for(int j=0; j<boardSize; j++){
@@ -61,7 +66,7 @@ void DrawManager::ClearPath(pathfindingbase* window)
     }
 }
 
-void DrawManager::Clear(pathfindingbase* window)
+void drawmanager::Clear(pathfindingbase* window)
 {
     window->startPos = IntVector(-1,-1);
     window->targetPos = IntVector(-1,-1);
@@ -74,7 +79,7 @@ void DrawManager::Clear(pathfindingbase* window)
     }
 }
 
-void DrawManager::ChangeOneCell(pathfindingbase* window, IntVector cellPosition, QColor color, CellType type)
+void drawmanager::ChangeOneCell(pathfindingbase* window, IntVector cellPosition, QColor color, CellType type)
 {
     IntVector boardPosition = window->boardPosition;
     if(!IsInBounds(cellPosition, boardPosition))
@@ -118,14 +123,14 @@ void DrawManager::ChangeOneCell(pathfindingbase* window, IntVector cellPosition,
     }
 }
 
-void DrawManager::TypeText(IntVector pos, QString text)
+void drawmanager::TypeText(IntVector pos, QString text)
 {
     paintPointer->setFont(QFont("times",5));
     paintPointer->drawText(QRect(pos.x(), pos.y(), cellSize, cellSize), Qt::AlignCenter, text);
 }
 
 
-void DrawManager::DrawPath(pathfindingbase* window)
+void drawmanager::DrawPath(pathfindingbase* window)
 {
     for(auto it = window->path.begin(); it !=window->path.end(); ++it)
     {
@@ -134,7 +139,7 @@ void DrawManager::DrawPath(pathfindingbase* window)
     }
 }
 
-void DrawManager::DrawVisited(pathfindingbase* window)
+void drawmanager::DrawVisited(pathfindingbase* window)
 {
     for(auto it = window->visitedCells.begin(); it != window->visitedCells.end(); ++it)
     {
@@ -143,7 +148,7 @@ void DrawManager::DrawVisited(pathfindingbase* window)
     }
 }
 
-void DrawManager::DrawMaze(pathfindingbase* window, pathfindingbase* maze)
+void drawmanager::DrawMaze(pathfindingbase* window, pathfindingbase* maze)
 {
     for(int y=0; y<boardSize; y++)
     {

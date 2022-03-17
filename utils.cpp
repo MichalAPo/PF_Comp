@@ -25,3 +25,26 @@ bool utils::IsInBounds(IntVector pos,IntVector boardPos)
             && pos.y() >= boardPos.y()
             && pos.y() <= boardPos.y()+(boardSize*cellSize);
 }
+
+std::list<IntVector> utils::ListRemove(std::list<IntVector> list, IntVector item)
+{
+    for (auto it = list.begin(); it != list.end(); it++)
+    {
+        if(*it==item)
+        {
+            list.remove(*it);
+            return list;
+        }
+    }
+    return list;
+}
+
+bool utils::ListContains(std::list<IntVector> list, IntVector item)
+{
+    for (auto it = list.begin(); it != list.end(); it++)
+    {
+        if(*it==item)
+            return true;
+    }
+    return false;
+}

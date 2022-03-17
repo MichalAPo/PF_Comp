@@ -12,7 +12,7 @@ class astar: public pathfindingbase
 public:
 
     astar(IntVector);
-    QList<IntVector> GetNeighbours(IntVector);
+    std::list<IntVector> GetNeighbours(IntVector);
     float Heuristics(IntVector, IntVector);
     void FindPath() override;
 };

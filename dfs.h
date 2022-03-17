@@ -9,7 +9,7 @@
 class dfs: public pathfindingbase
 {
 public:
-    dfs(IntVector);
+    dfs(IntVector bPos): pathfindingbase(bPos){};
     bool test = true;
     void FindPath(bool) override;
 };

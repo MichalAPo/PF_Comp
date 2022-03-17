@@ -9,10 +9,10 @@
 #include "utils.h"
 #include "pathfindingbase.h"
 
-class DrawManager
+class drawmanager
 {
 public:
-    DrawManager(QPainter*);
+    drawmanager(QPainter*);
     void DrawPath(pathfindingbase*);
     void DrawVisited(pathfindingbase*);
     void ChangeOneCell(pathfindingbase*, IntVector, QColor, CellType);

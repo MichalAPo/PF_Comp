@@ -14,7 +14,7 @@
 
 #include "astar.h"
 #include "dfs.h"
-#include "DrawManager.h"
+#include "drawmanager.h"
 #include "pathfindingbase.h"
 
 class mainmanager: public QGraphicsView
@@ -35,7 +35,7 @@ public:
     dfs* dfsWindow;
     dfs* bfsWindow;
     // /\ iterativebase:pfbase for dfs i bfs
-    DrawManager* drawManager;
+    drawmanager* drawManager;
 };
 
 #endif // MAINMANAGER_H

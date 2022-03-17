@@ -9,14 +9,15 @@ mainmanager::mainmanager(QWidget *parent): QGraphicsView(parent)
     pixMap->fill(Qt::white);
 
     paint = new QPainter(pixMap);
-    paint->setPen(QColor(0,0,0,255));
+    paint->setPen(Qt::NoPen);
+    //paint->setPen(QColor(0,0,0,255));
     paint->setBrush(QColor(255,255,255,255));
 
     aStarWindow = new astar(IntVector(25,25));
     dfsWindow = new dfs(IntVector(360,25));
     bfsWindow = new dfs(IntVector(695,25));
 
-    drawManager = new DrawManager(paint);
+    drawManager = new drawmanager(paint);
     drawManager->DrawBoard(aStarWindow);
     drawManager->DrawBoard(dfsWindow);
     drawManager->DrawBoard(bfsWindow);
@@ -74,7 +75,7 @@ void mainmanager::keyPressEvent(QKeyEvent *event)
             drawManager->DrawPath(dfsWindow);
             drawManager->DrawPath(bfsWindow);
 
-            drawManager->DrawTags(dfsWindow);
+            //drawManager->DrawTags(dfsWindow);
 
             scene->addPixmap(*pixMap);
             break;

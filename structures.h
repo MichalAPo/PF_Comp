@@ -38,6 +38,8 @@ struct IntVector
     }
 };
 
+typedef std::pair<double, IntVector> Pair;
+
 struct OneCell
 {
   IntVector parentPosition = IntVector(0,0);
@@ -45,7 +47,7 @@ struct OneCell
   bool visited = false;
   float g=std::numeric_limits<float>().max(),h=std::numeric_limits<float>().max(),f=std::numeric_limits<float>().max();
 
-  QList<IntVector> directions =
+  std::vector<IntVector> directions =
   {
       IntVector(0,-1),
       IntVector(1,0),
