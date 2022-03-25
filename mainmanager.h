@@ -14,6 +14,7 @@
 
 #include "astar.h"
 #include "dfs.h"
+#include "dijkstra.h"
 #include "drawmanager.h"
 #include "pathfindingbase.h"
 
@@ -34,7 +35,7 @@ public:
     astar* aStarWindow;
     dfs* dfsWindow;
     dfs* bfsWindow;
-    // /\ iterativebase:pfbase for dfs i bfs
+    dijkstra* dijkstraWindow;
     drawmanager* drawManager;
 };
 

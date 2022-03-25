@@ -2,37 +2,13 @@
 
 using namespace utils;
 
-astar::astar(IntVector bPos): pathfindingbase(bPos)
-{
-    path = std::list<IntVector>();
-    visitedCells = std::list<IntVector>();
-}
-
 float astar::Heuristics(IntVector a, IntVector b)
 {
-    return sqrt((powf((a.x() - b.x()),2)) + (powf((a.y() - b.y()),2)));
-}
-
-std::list<IntVector> astar::GetNeighbours(IntVector position)
-{
-    std::list<IntVector> neighbours;
-
-    for(int i=0; i<4; i++)
-    {
-        std::vector<IntVector> a = board[position.x()][position.y()].directions;
-        IntVector p = position + board[position.x()][position.y()].directions[i];
-        if (!IsInBounds(p, IntVector(0,0)))
-            continue;
-        if(board[p.x()][p.y()].type != CellType::Wall)
-            neighbours.push_back(p);
-    }
-    return neighbours;
+    return sqrt((powf((a.x - b.x),2)) + (powf((a.y - b.y),2)));
 }
 
 void astar::FindPath()
 {
-    Initialize();
-
     if(startPos == targetPos)
         return;
 
@@ -40,15 +16,18 @@ void astar::FindPath()
             || !IsInBounds(targetPos, IntVector(0,0)))
         return;
 
-    bool closedList[boardSize][boardSize];
-    memset(closedList, false, sizeof(closedList));
+    Initialize();
+
+    bool closedCells[boardSize][boardSize];
+    memset(closedCells, false, sizeof(closedCells));
     std::list<IntVector> openList;
 
     IntVector currentCell;
-    board[startPos.x()][startPos.y()].f=0;
-    board[startPos.x()][startPos.y()].g=0;
-    board[startPos.x()][startPos.y()].h=0;
-    board[startPos.x()][startPos.y()].parentPosition=startPos;
+    board[startPos.x][startPos.y].f=0;
+    board[startPos.x][startPos.y].g=0;
+    board[startPos.x][startPos.y].h=0;
+    board[startPos.x][startPos.y].parentPosition=startPos;
+    //board[startPos.x()][startPos.y()] = {0, 0, 0, startPos};
     openList.push_back(startPos);
 
     while(!openList.empty())
@@ -56,22 +35,22 @@ void astar::FindPath()
         float fmin = std::numeric_limits<float>().max();
         for(auto it = openList.begin(); it !=openList.end(); ++it)
         {
-            if(board[it->x()][it->y()].f < fmin)
+            if(board[it->x][it->y].f < fmin)
             {
                 currentCell = *it;
-                closedList[it->x()][it->y()] = true;
-                fmin = board[it->x()][it->y()].f;
+                closedCells[it->x][it->y] = true;
+                fmin = board[it->x][it->y].f;
             }
         }
 
-        openList = ListRemove(openList, currentCell);
+        openList = RemoveVectorElement(openList, currentCell);
 
         std::list<IntVector> neighbours = GetNeighbours(currentCell);
 
         for(auto it = neighbours.begin(); it !=neighbours.end(); ++it)
         {
-            int x=it->x();
-            int y=it->y();
+            int x=it->x;
+            int y=it->y;
             if(!IsInBounds(*it, IntVector(0,0)))
                 continue;
             if(*it == targetPos)
@@ -81,25 +60,29 @@ void astar::FindPath()
                 return;
             }
 
-            if(closedList[x][y])
+            if(closedCells[x][y])
                 continue;
 
-            float gThis = board[currentCell.x()][currentCell.y()].g + 1.0;
-            float hThis = Heuristics(*it, targetPos);
-            float fThis = gThis + hThis;
+            float NeighbourG = board[currentCell.x][currentCell.y].g + 1.0;
+            float NeighbourH = Heuristics(*it, targetPos);
+            float NeighbourF = NeighbourG + NeighbourH + board[it->x][it->y].travelCost;
+//            float NeighbourF = NeighbourG + NeighbourH;
 
-            if(board[x][y].f!=std::numeric_limits<float>().max() || board[x][y].f <= fThis)
+            if(board[x][y].f != std::numeric_limits<float>().max() || board[x][y].f <= NeighbourF)
                 continue;
 
             openList.push_back(*it);
-            board[x][y].ChangeGFH(gThis,fThis,hThis);
+            board[x][y].ChangeFGH(NeighbourF,NeighbourG,NeighbourH);
             board[x][y].parentPosition=currentCell;
 
-            if(*it != startPos && *it != targetPos)
+            if(*it != startPos && *it != targetPos && !board[x][y].visited)
+            {
+                board[x][y].visited=true;
                 visitedCells.push_back(*it);
+            }
 
         }
-        closedList[currentCell.x()][currentCell.y()]=true;
+        closedCells[currentCell.x][currentCell.y]=true;
     }
 }
 

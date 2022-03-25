@@ -9,15 +9,16 @@
 class pathfindingbase
 {
 public:
-    pathfindingbase(IntVector);
+    pathfindingbase(IntVector, int seed);
 
-    void CreateBoard();
+    void CreateBoard(int seed);
     void Initialize();
     virtual void FindPath(){};
     virtual void FindPath(bool){};
     bool IsValid(IntVector);
     void GenerateMaze();
     std::list<IntVector> ReconstructPath();
+    std::list<IntVector> GetNeighbours(IntVector);
 
     IntVector boardPosition;
     std::list<IntVector> visitedCells;
@@ -29,7 +30,6 @@ public:
     std::list<IntVector> checkedCells;
     IntVector currentCell;
     std::list<IntVector> mazePaths;
-    IntVector checkCell;
 };
 
 #endif // PATHFINDINGBASE_H

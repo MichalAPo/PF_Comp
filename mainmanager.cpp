@@ -13,14 +13,17 @@ mainmanager::mainmanager(QWidget *parent): QGraphicsView(parent)
     //paint->setPen(QColor(0,0,0,255));
     paint->setBrush(QColor(255,255,255,255));
 
-    aStarWindow = new astar(IntVector(25,25));
-    dfsWindow = new dfs(IntVector(360,25));
-    bfsWindow = new dfs(IntVector(695,25));
+    int seed = rand();
+    aStarWindow = new astar(IntVector(spaceBetween,spaceBetween), seed);
+    dfsWindow = new dfs(IntVector((3*spaceBetween)+(cellSize*boardSize),spaceBetween), seed);
+    bfsWindow = new dfs(IntVector((3*spaceBetween)+(cellSize*boardSize),(3*spaceBetween)+(cellSize*boardSize)), seed);
+    dijkstraWindow = new dijkstra(IntVector(spaceBetween,(3*spaceBetween)+(cellSize*boardSize)), seed);
 
     drawManager = new drawmanager(paint);
-    drawManager->DrawBoard(aStarWindow);
-    drawManager->DrawBoard(dfsWindow);
-    drawManager->DrawBoard(bfsWindow);
+    drawManager->DrawBoard(aStarWindow, "AStar");
+    drawManager->DrawBoard(dfsWindow, "DFS");
+    drawManager->DrawBoard(bfsWindow, "BFS");
+    drawManager->DrawBoard(dijkstraWindow, "Dijkstra");
 
     scene->addPixmap(*pixMap);
 }
@@ -62,18 +65,22 @@ void mainmanager::keyPressEvent(QKeyEvent *event)
             drawManager->ClearPath(aStarWindow);
             drawManager->ClearPath(dfsWindow);
             drawManager->ClearPath(bfsWindow);
+            drawManager->ClearPath(dijkstraWindow);
 
             aStarWindow->FindPath();
             dfsWindow->FindPath(true);
             bfsWindow->FindPath(false);
+            dijkstraWindow->FindPath();
 
             drawManager->DrawVisited(aStarWindow);
             drawManager->DrawVisited(dfsWindow);
             drawManager->DrawVisited(bfsWindow);
+            drawManager->DrawVisited(dijkstraWindow);
 
             drawManager->DrawPath(aStarWindow);
             drawManager->DrawPath(dfsWindow);
             drawManager->DrawPath(bfsWindow);
+            drawManager->DrawPath(dijkstraWindow);
 
             //drawManager->DrawTags(dfsWindow);
 
@@ -85,6 +92,7 @@ void mainmanager::keyPressEvent(QKeyEvent *event)
             drawManager->ClearPath(aStarWindow);
             drawManager->ClearPath(dfsWindow);
             drawManager->ClearPath(bfsWindow);
+            drawManager->ClearPath(dijkstraWindow);
             scene->addPixmap(*pixMap);
             break;
         }
@@ -93,10 +101,13 @@ void mainmanager::keyPressEvent(QKeyEvent *event)
             drawManager->Clear(aStarWindow);
             drawManager->Clear(dfsWindow);
             drawManager->Clear(bfsWindow);
+            drawManager->Clear(dijkstraWindow);
+
             aStarWindow->GenerateMaze();
             drawManager->DrawMaze(aStarWindow, aStarWindow);
             drawManager->DrawMaze(dfsWindow, aStarWindow);
             drawManager->DrawMaze(bfsWindow, aStarWindow);
+            drawManager->DrawMaze(dijkstraWindow, aStarWindow);
             scene->addPixmap(*pixMap);
             break;
         }
@@ -110,8 +121,11 @@ void mainmanager::mousePressEvent(QMouseEvent *event)
     {
         IntVector mousePosition = IntVector(event->scenePosition().x(), event->scenePosition().y());
         drawManager->ChangeOneCell(aStarWindow, mousePosition, color, type);
-        drawManager->ChangeOneCell(dfsWindow ,mousePosition, color, type);
-        drawManager->ChangeOneCell(bfsWindow ,mousePosition, color, type);
+        drawManager->ChangeOneCell(dfsWindow ,mousePosition + dfsWindow->boardPosition - IntVector(spaceBetween,spaceBetween), color, type);
+        drawManager->ChangeOneCell(bfsWindow ,mousePosition + bfsWindow->boardPosition - IntVector(spaceBetween,spaceBetween), color, type);
+        drawManager->ChangeOneCell(dijkstraWindow ,mousePosition + dijkstraWindow->boardPosition - IntVector(spaceBetween,spaceBetween), color, type);
         scene->addPixmap(*pixMap);
     }
 }
+
+

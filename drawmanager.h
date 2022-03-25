@@ -17,7 +17,7 @@ public:
     void DrawVisited(pathfindingbase*);
     void ChangeOneCell(pathfindingbase*, IntVector, QColor, CellType);
     void TypeText(IntVector, QString);
-    void DrawBoard(pathfindingbase*);
+    void DrawBoard(pathfindingbase*, QString);
     void ClearPath(pathfindingbase*);
     void Clear(pathfindingbase*);
     void DrawMaze(pathfindingbase*, pathfindingbase*);

@@ -2,19 +2,21 @@
 
 using namespace utils;
 
-pathfindingbase::pathfindingbase(IntVector pos)
+pathfindingbase::pathfindingbase(IntVector pos, int seed)
 {
     boardPosition=pos;
-    CreateBoard();
+    CreateBoard(seed);
 }
 
-void pathfindingbase::CreateBoard()
+void pathfindingbase::CreateBoard(int seed)
 {
+    srand(seed);
     for(int i=0; i<boardSize; i++)
     {
         for(int j=0; j<boardSize; j++)
         {
             board[i][j] = OneCell();
+            board[i][j].travelCost = rand() % 255 + 1;
         }
     }
 }
@@ -24,17 +26,19 @@ void pathfindingbase::Initialize()
     path.clear();
     visitedCells.clear();
     checkedCells.clear();
+    board[startPos.x][startPos.y].visited = false;
+    board[targetPos.x][targetPos.y].visited = false;
 }
 
 std::list<IntVector> pathfindingbase::ReconstructPath()
 {
     std::list<IntVector> path = std::list<IntVector>();
-    IntVector pos = board[targetPos.x()][targetPos.y()].parentPosition;
+    IntVector pos = board[targetPos.x][targetPos.y].parentPosition;
     path.push_back(pos);
 
     while(pos != startPos)
     {
-        pos = board[pos.x()][pos.y()].parentPosition;
+        pos = board[pos.x][pos.y].parentPosition;
 
         if(pos != startPos)
         {
@@ -62,7 +66,7 @@ bool pathfindingbase::IsValid(IntVector pos)
     for(int i = 0; i < 8; i++)
     {
         IntVector index = pos + offset[i];
-        if(maze[index.x()][index.y()].type == CellType::Empty)
+        if(maze[index.x][index.y].type == CellType::Empty)
             return false;
         if(!IsInBounds((pos + offset[i]), IntVector(0,0)))
             return false;
@@ -82,44 +86,63 @@ void pathfindingbase::GenerateMaze()
 
 
     maze[1][1].type = CellType::Empty;
-    checkCell = IntVector(1,1);
-    mazePaths.push_back(checkCell);
+    currentCell = IntVector(1,1);
+    mazePaths.push_back(currentCell);
 
     while(true)
     {
         if(mazePaths.empty())
             break;
 
-        if(maze[checkCell.x()][checkCell.y()].directions.empty())
+        if(maze[currentCell.x][currentCell.y].directions.empty())
         {
-            checkCell = mazePaths.back();
+            currentCell = mazePaths.back();
             mazePaths.pop_back();
             continue;
         }
 
-        int direction = rand() % maze[checkCell.x()][checkCell.y()].directions.size();
-        IntVector index = checkCell + (maze[checkCell.x()][checkCell.y()].directions[direction] * 2);
+        int direction = rand() % maze[currentCell.x][currentCell.y].directions.size();
+        IntVector index = currentCell + (maze[currentCell.x][currentCell.y].directions[direction] * 2);
 
         if(!IsValid(index))
         {
-            maze[checkCell.x()][checkCell.y()].directions.erase(maze[checkCell.x()][checkCell.y()].directions.begin()+direction);
+            maze[currentCell.x][currentCell.y].directions.erase(maze[currentCell.x][currentCell.y].directions.begin()+direction);
             continue;
         }
 
-        maze[index.x()][index.y()].type = CellType::Empty;
+        maze[index.x][index.y].type = CellType::Empty;
 
-        if(checkCell.x() == index.x())
+        if(currentCell.x == index.x)
         {
-            IntVector tempPos = IntVector(checkCell.x(), ((checkCell.y() + index.y()))/2);
-            maze[tempPos.x()][tempPos.y()].type = CellType::Empty;
+            IntVector tempPos = IntVector(currentCell.x, ((currentCell.y + index.y))/2);
+            maze[tempPos.x][tempPos.y].type = CellType::Empty;
         }
-        if(checkCell.y() == index.y())
+        if(currentCell.y == index.y)
         {
-            IntVector tempPos = IntVector((checkCell.x() + index.x())/2, checkCell.y());
-            maze[tempPos.x()][tempPos.y()].type = CellType::Empty;
+            IntVector tempPos = IntVector((currentCell.x + index.x)/2, currentCell.y);
+            maze[tempPos.x][tempPos.y].type = CellType::Empty;
         }
 
-        checkCell = index;
-        mazePaths.push_back(checkCell);
+        currentCell = index;
+        mazePaths.push_back(currentCell);
     }
+}
+
+std::list<IntVector> pathfindingbase::GetNeighbours(IntVector position)
+{
+    std::list<IntVector> neighbours;
+
+    for(int i=0; i<4; i++)
+    {
+        std::vector<IntVector> a = board[position.x][position.y].directions;
+        IntVector p = position + board[position.x][position.y].directions[i];
+        if (!IsInBounds(p, IntVector(0,0)))
+            continue;
+        if(board[p.x][p.y].visited)
+            continue;
+        if(board[p.x][p.y].type != CellType::Wall)
+            neighbours.push_back(p);
+//       board[p.x][p.y].visited=true;
+    }
+    return neighbours;
 }

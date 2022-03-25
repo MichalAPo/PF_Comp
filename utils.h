@@ -10,8 +10,8 @@ namespace utils
     IntVector CalculateOnBoardPosition(IntVector, IntVector);
     IntVector CalculateWorldPosition(IntVector, IntVector);
     bool IsInBounds(IntVector, IntVector);
-    bool ListContains(std::list<IntVector>, IntVector);
-    std::list<IntVector> ListRemove(std::list<IntVector>, IntVector);
+    bool VectorContains(std::list<IntVector>, IntVector);
+    std::list<IntVector> RemoveVectorElement(std::list<IntVector>, IntVector);
 };
 
 #endif // UTILS_H

@@ -11,8 +11,7 @@ class astar: public pathfindingbase
 {
 public:
 
-    astar(IntVector);
-    std::list<IntVector> GetNeighbours(IntVector);
+    astar(IntVector bPos, int seed): pathfindingbase(bPos, seed){};
     float Heuristics(IntVector, IntVector);
     void FindPath() override;
 };

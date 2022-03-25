@@ -11,6 +11,7 @@ CONFIG += c++11
 SOURCES += \
     astar.cpp \
     dfs.cpp \
+    dijkstra.cpp \
     drawmanager.cpp \
     main.cpp \
     mainmanager.cpp \
@@ -20,6 +21,7 @@ SOURCES += \
 HEADERS += \
     astar.h \
     dfs.h \
+    dijkstra.h \
     drawmanager.h \
     mainmanager.h \
     pathfindingbase.h \
